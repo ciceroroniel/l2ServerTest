@@ -1,0 +1,24 @@
+# Build artifacts
+source/
+server/
+backups/
+
+# Local secrets (use *.example as template)
+config/*.local.env
+
+# IDE
+.idea/
+*.iml
+out/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs and runtime
+*.log
+log/
+
+# Env files with secrets
+.env
+.env.*
