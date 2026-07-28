@@ -24,6 +24,7 @@ l2ServerTest/
 | 4 | [DATABASE.md](docs/DATABASE.md) |
 | 5 | [SERVERS.md](docs/SERVERS.md) |
 | 6 | [CLIENT.md](docs/CLIENT.md) |
+| — | [COMANDOS_BANCO.md](docs/COMANDOS_BANCO.md) — comandos SQL para GM, contas, itens |
 
 ### Configuração local (não versionada)
 
