@@ -33,7 +33,8 @@ foreach ($item in $order) {
     $file = Get-ChildItem -Path $modDir -Filter "$($item.n)_*.md" | Select-Object -First 1
     if (-not $file) { Write-Warning "Arquivo $($item.n)_*.md nao encontrado"; continue }
     $docId = "doc-$($item.n)"
-    $raw = Get-Content -Path $file.FullName -Raw
+    # Le explicitamente como UTF-8 para preservar acentuacao (ç, ã, é...)
+    $raw = [System.IO.File]::ReadAllText($file.FullName, [System.Text.UTF8Encoding]::new($false))
     # Protege contra fechamento precoce do <script>
     $raw = $raw.Replace('</script', '<\/script')
 
@@ -377,5 +378,6 @@ $html = $template.Replace('@@NAV@@', $navSb.ToString().TrimEnd())
 $html = $html.Replace('@@SECTIONS@@', $secSb.ToString().TrimEnd())
 $html = $html.Replace('@@DOCLIST@@', $listSb.ToString().TrimEnd())
 
-Set-Content -Path $outFile -Value $html -Encoding UTF8
+# Escreve como UTF-8 sem BOM (browser usa <meta charset="UTF-8">)
+[System.IO.File]::WriteAllText($outFile, $html, [System.Text.UTF8Encoding]::new($false))
 Write-Host "OK -> $outFile"
