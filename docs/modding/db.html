@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L2 DB Explorer - L2J Mobius Interlude</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --panel:#fff; --ink:#1f2430; --muted:#6b7280; --line:#e6e8ec;
+    --brand:#7c3aed; --brand2:#4f46e5; --accent:#0ea5e9; --code-bg:#0d1117;
+    --shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.04); --sidebar:250px;
+  }
+  [data-theme="dark"]{
+    --bg:#0f1115; --panel:#161a22; --ink:#e6e8ee; --muted:#9aa3b2; --line:#242a35;
+    --brand:#a78bfa; --brand2:#818cf8; --accent:#38bdf8; --code-bg:#0b0e14;
+    --shadow:0 1px 3px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .app{display:flex;min-height:100vh}
+  .sidebar{width:var(--sidebar);flex:0 0 var(--sidebar);position:sticky;top:0;height:100vh;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column}
+  .brand{padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+  .brand h1{font-size:15px;margin:0}
+  .brand p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+  nav{padding:8px 10px;overflow-y:auto;flex:1}
+  .nav-link{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;color:var(--ink);font-size:14px;margin:2px 0;cursor:pointer}
+  .nav-link:hover{background:var(--bg);text-decoration:none}
+  .nav-link.active{background:linear-gradient(90deg,var(--brand),var(--brand2));color:#fff}
+  .nav-link .c{margin-left:auto;font-size:11px;color:var(--muted);background:var(--bg);padding:1px 7px;border-radius:20px;border:1px solid var(--line)}
+  .nav-link.active .c{color:#fff;background:rgba(255,255,255,.2);border-color:transparent}
+  .nav-sep{margin:10px 12px 4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;background:var(--panel);border-bottom:1px solid var(--line);padding:9px 20px}
+  .search{position:relative;flex:1;max-width:560px}
+  .search input{width:100%;padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--brand)}
+  .results{position:absolute;top:110%;left:0;right:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);max-height:60vh;overflow-y:auto;display:none;z-index:20}
+  .results.open{display:block}
+  .res{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--line);font-size:13px}
+  .res:hover{background:var(--bg)}
+  .res .tag{font-size:10px;text-transform:uppercase;padding:2px 6px;border-radius:5px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+  .res .id{margin-left:auto;color:var(--muted);font-size:12px}
+  .icon-btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;width:36px;height:36px;border-radius:9px;font-size:15px;display:flex;align-items:center;justify-content:center}
+  .icon-btn:hover{border-color:var(--brand)}
+  .menu-btn{display:none}
+  .content{max-width:1080px;width:100%;margin:0 auto;padding:22px 20px 70px}
+  h2.page{font-size:22px;margin:.2em 0 .7em}
+  .muted{color:var(--muted)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  select,.filter input{padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink);font-size:13px;outline:none}
+  .filter{flex:1;min-width:180px}
+  .filter input{width:100%}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  thead th{position:sticky;top:55px;background:var(--panel);z-index:2;font-weight:650;cursor:pointer;white-space:nowrap}
+  tbody tr:hover{background:var(--panel)}
+  .badge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:6px;font-weight:600;color:#fff}
+  .g-NONE{background:#9ca3af}.g-D{background:#0d9488}.g-C{background:#2563eb}.g-B{background:#7c3aed}.g-A{background:#ea580c}.g-S{background:#dc2626}
+  .type-pill{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+  .pager{display:flex;gap:8px;align-items:center;margin-top:14px;justify-content:center}
+  .btn{padding:7px 13px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink);cursor:pointer;font-size:13px}
+  .btn:hover{border-color:var(--brand)}
+  .btn:disabled{opacity:.4;cursor:default}
+  /* detail */
+  .det-head{display:flex;gap:16px;align-items:center;margin-bottom:8px}
+  .ico{width:56px;height:56px;border-radius:12px;flex:0 0 56px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:#fff;box-shadow:var(--shadow);object-fit:cover}
+  .det-head h2{margin:0;font-size:22px}
+  .det-sub{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:14px 0;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 10px;font-size:15px}
+  .kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 18px;font-size:13.5px}
+  .kv div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:3px 0}
+  .kv .k{color:var(--muted)}
+  .list-links{display:flex;flex-direction:column;gap:5px;font-size:13.5px}
+  .li{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;padding:5px 0;border-bottom:1px solid var(--line)}
+  .chip{font-size:11px;padding:1px 7px;border-radius:20px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+  .chance{color:#16a34a;font-weight:600}
+  details summary{cursor:pointer;color:var(--muted);font-size:13px}
+  pre{background:var(--code-bg);color:#e6edf3;border-radius:10px;padding:12px;overflow-x:auto;font-size:12px;font-family:ui-monospace,Consolas,monospace}
+  code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12.5px;background:color-mix(in srgb,var(--brand) 12%,var(--bg));padding:1px 5px;border-radius:5px}
+  .card.dev{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 6%,var(--panel))}
+  .card.dev h3{color:var(--brand)}
+  .cbtn{border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;border-radius:6px;padding:0 6px;font-size:12px;line-height:1.6}
+  .cbtn:hover{border-color:var(--brand);color:var(--brand)}
+  #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:9px 16px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:100}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+  .stat-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow);cursor:pointer}
+  .stat-card:hover{border-color:var(--brand)}
+  .stat-card .n{font-size:26px;font-weight:700}
+  .stat-card .l{color:var(--muted);font-size:13px;margin-top:2px}
+  .empty{color:var(--muted);font-style:italic;font-size:13px}
+  .backdrop{display:none}
+  @media (max-width:820px){
+    .sidebar{position:fixed;z-index:30;transform:translateX(-100%);transition:.25s}
+    body.nav-open .sidebar{transform:none}
+    body.nav-open .backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:20}
+    .menu-btn{display:flex}
+    thead th{top:53px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><h1>L2 DB Explorer</h1><p>L2J Mobius - Interlude</p></div>
+    <nav id="nav">
+      <a class="nav-link" data-route="home">📊 Dashboard</a>
+      <div class="nav-sep">Dados</div>
+      <a class="nav-link" data-route="items">⚔️ Itens <span class="c" id="c-items"></span></a>
+      <a class="nav-link" data-route="npcs">👹 NPCs / Mobs <span class="c" id="c-npcs"></span></a>
+      <a class="nav-link" data-route="skills">✨ Skills <span class="c" id="c-skills"></span></a>
+      <a class="nav-link" data-route="recipes">🧪 Receitas <span class="c" id="c-recipes"></span></a>
+      <a class="nav-link" data-route="multisell">🔁 Multisell <span class="c" id="c-multisell"></span></a>
+      <a class="nav-link" data-route="buylists">🏪 Buylists <span class="c" id="c-buylists"></span></a>
+      <a class="nav-link" data-route="enchant">🔨 Enchant</a>
+      <div class="nav-sep">Documentacao</div>
+      <a class="nav-link" href="index.html">📖 Guias de Customizacao</a>
+    </nav>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn">&#9776;</button>
+      <div class="search">
+        <input id="search" type="search" placeholder="Buscar por nome ou ID (itens, npcs, skills)..." autocomplete="off">
+        <div class="results" id="results"></div>
+      </div>
+      <button class="icon-btn" id="themeBtn" title="Tema">&#9788;</button>
+    </div>
+    <article class="content" id="content"><p class="muted">Carregando banco de dados...</p></article>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script>
+const DB = window.L2DB;
+const content = document.getElementById('content');
+const gradeOrder = { NONE:0, D:1, C:2, B:3, A:4, S:5 };
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = n => (n==null?'-':Number(n).toLocaleString('pt-BR'));
+
+// ---- Secao "Para Desenvolvedores" ----
+const SRC = 'source/L2J_Mobius_CT_0_Interlude/dist/game/';
+const RUN = 'server/game/';
+function toast(msg){ let t=document.getElementById('toast'); if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t);} t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1700); }
+function copyText(t){ if(navigator.clipboard) navigator.clipboard.writeText(t); toast('Copiado: '+t); }
+function copyBtn(text){ return `<button class="cbtn" title="Copiar" onclick="copyText('${text.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">⧉</button>`; }
+function pathRow(label, p){ return `<div class="li"><span class="chip">${label}</span> <code>${esc(p)}</code> ${copyBtn(p)}</div>`; }
+function devCard(o){
+  const paths = [pathRow('Editar (fonte)', SRC+o.file), pathRow('Runtime (gerado)', RUN+o.file)]
+    .concat((o.extraPaths||[]).map(p=>pathRow(p.label,p.path))).join('');
+  const change = (o.change||[]).map(c=>`<li>${c}</li>`).join('');
+  const test = (o.test||[]).map(t=>`<code>${esc(t)}</code>`).join(' &nbsp; ');
+  return `<div class="card dev"><h3>🛠️ Para Desenvolvedores</h3>
+    <div class="list-links">${paths}</div>
+    <div class="kv" style="margin-top:10px">
+      <div><span class="k">Parser (lê o XML)</span><span><code>${esc(o.parser)}</code></span></div>
+      <div><span class="k">Model (objeto)</span><span><code>${esc(o.model)}</code></span></div>
+      <div><span class="k">Recarregar</span><span>${esc(o.reload)}</span></div>
+      <div><span class="k">Guia</span><span><a href="${o.guide}">${o.guideLabel}</a></span></div>
+    </div>
+    ${change?`<div style="margin-top:10px"><b>O que dá para alterar neste registro:</b><ul style="margin:6px 0 0">${change}</ul></div>`:''}
+    ${test?`<div style="margin-top:8px"><b>Testar (GM):</b> ${test}</div>`:''}
+    ${o.notes?`<p class="muted" style="margin-top:8px">${o.notes}</p>`:''}
+  </div>`;
+}
+
+// ---- helpers de nome/link ----
+function itemName(id){ const it=DB.items[id]; return it?it.name:('#'+id); }
+function npcName(id){ const n=DB.npcs[id]; return n?n.name:('#'+id); }
+function itemLink(id){ const it=DB.items[id]; const g=it?it.grade:'NONE';
+  return `<a href="#item/${id}">${esc(itemName(id))}</a> <span class="chip">${id}</span>`; }
+function npcLink(id){ return `<a href="#npc/${id}">${esc(npcName(id))}</a> <span class="chip">${id}</span>`; }
+function skillLink(id){ return `<a href="#skill/${id}">${esc((DB.skills[id]||{}).name||('#'+id))}</a> <span class="chip">${id}</span>`; }
+function gradeBadge(g){ return `<span class="badge g-${g||'NONE'}">${g||'NG'}</span>`; }
+function iconBox(it){
+  const g=it.grade||'NONE'; const letter=(it.name||'?').trim()[0]||'?';
+  const colors={NONE:'#9ca3af',D:'#0d9488',C:'#2563eb',B:'#7c3aed',A:'#ea580c',S:'#dc2626'};
+  return `<img class="ico" src="icons/${it.id}.png" style="background:${colors[g]}" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),{className:'ico',style:'background:${colors[g]}',textContent:'${esc(letter)}'}))" alt="">`;
+}
+
+// ---- indice de busca ----
+let SEARCH=[];
+function buildSearch(){
+  for(const id in DB.items) SEARCH.push({t:'item',id:+id,name:DB.items[id].name});
+  for(const id in DB.npcs)  SEARCH.push({t:'npc', id:+id,name:DB.npcs[id].name});
+  for(const id in DB.skills)SEARCH.push({t:'skill',id:+id,name:DB.skills[id].name});
+}
+const searchInput=document.getElementById('search');
+const resultsEl=document.getElementById('results');
+function runSearch(q){
+  q=q.trim().toLowerCase();
+  if(!q){ resultsEl.classList.remove('open'); return; }
+  const isNum=/^\d+$/.test(q);
+  let out=[];
+  for(const e of SEARCH){
+    if(isNum){ if(String(e.id)===q||String(e.id).startsWith(q)) out.push(e); }
+    else if(e.name.toLowerCase().includes(q)) out.push(e);
+    if(out.length>60) break;
+  }
+  out.sort((a,b)=> (isNum? a.id-b.id : a.name.length-b.name.length));
+  resultsEl.innerHTML = out.slice(0,40).map(e=>{
+    const route = e.t==='item'?`#item/${e.id}`:e.t==='npc'?`#npc/${e.id}`:`#skill/${e.id}`;
+    return `<div class="res" onclick="location.hash='${route}';closeSearch()"><span class="tag">${e.t}</span> ${esc(e.name)} <span class="id">${e.id}</span></div>`;
+  }).join('') || '<div class="res muted">Nada encontrado</div>';
+  resultsEl.classList.add('open');
+}
+function closeSearch(){ resultsEl.classList.remove('open'); searchInput.value=''; }
+searchInput.addEventListener('input', e=>runSearch(e.target.value));
+document.addEventListener('click', e=>{ if(!e.target.closest('.search')) resultsEl.classList.remove('open'); });
+
+// ---- LISTAS (paginadas) ----
+const PAGE=100;
+function listItems(){
+  let filter='', type='', grade='', page=0, sortKey='id', sortDir=1;
+  const all=Object.values(DB.items);
+  const types=[...new Set(all.map(i=>i.type))].sort();
+  const grades=['NONE','D','C','B','A','S'];
+  function render(){
+    let rows=all.filter(i=>{
+      if(type && i.type!==type) return false;
+      if(grade && i.grade!==grade) return false;
+      if(filter){ const f=filter.toLowerCase(); if(!i.name.toLowerCase().includes(f) && String(i.id)!==filter) return false; }
+      return true;
+    });
+    rows.sort((a,b)=>{ let x=a[sortKey],y=b[sortKey]; if(sortKey==='grade'){x=gradeOrder[a.grade];y=gradeOrder[b.grade];}
+      if(typeof x==='string'){x=x.toLowerCase();y=(y||'').toLowerCase();} return (x>y?1:x<y?-1:0)*sortDir; });
+    const total=rows.length; const pages=Math.ceil(total/PAGE); page=Math.min(page,Math.max(0,pages-1));
+    const slice=rows.slice(page*PAGE,page*PAGE+PAGE);
+    content.querySelector('#tbody').innerHTML = slice.map(i=>`<tr>
+      <td>${i.id}</td>
+      <td><a href="#item/${i.id}">${esc(i.name)}</a></td>
+      <td><span class="type-pill">${esc(i.type)}</span></td>
+      <td>${gradeBadge(i.grade)}</td>
+      <td>${esc(i.weaponType||i.slot||'')}</td>
+      <td>${fmt(i.price)}</td>
+    </tr>`).join('');
+    content.querySelector('#info').textContent=`${fmt(total)} itens · pagina ${page+1}/${pages||1}`;
+    content.querySelector('#prev').disabled=page<=0;
+    content.querySelector('#next').disabled=page>=pages-1;
+  }
+  content.innerHTML=`<h2 class="page">⚔️ Itens</h2>
+    <div class="row">
+      <div class="filter"><input id="f" placeholder="Filtrar por nome ou ID..."></div>
+      <select id="ftype"><option value="">Todos os tipos</option>${types.map(t=>`<option>${t}</option>`).join('')}</select>
+      <select id="fgrade"><option value="">Todas as grades</option>${grades.map(g=>`<option>${g}</option>`).join('')}</select>
+    </div>
+    <div class="muted" id="info" style="margin-bottom:8px"></div>
+    <table><thead><tr>
+      <th data-k="id">ID</th><th data-k="name">Nome</th><th data-k="type">Tipo</th>
+      <th data-k="grade">Grade</th><th>Sub</th><th data-k="price">Preço</th>
+    </tr></thead><tbody id="tbody"></tbody></table>
+    <div class="pager"><button class="btn" id="prev">← Anterior</button><button class="btn" id="next">Próximo →</button></div>`;
+  content.querySelector('#f').oninput=e=>{filter=e.target.value;page=0;render();};
+  content.querySelector('#ftype').onchange=e=>{type=e.target.value;page=0;render();};
+  content.querySelector('#fgrade').onchange=e=>{grade=e.target.value;page=0;render();};
+  content.querySelector('#prev').onclick=()=>{page--;render();window.scrollTo(0,0);};
+  content.querySelector('#next').onclick=()=>{page++;render();window.scrollTo(0,0);};
+  content.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k; if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1;}render();});
+  render();
+}
+function listNpcs(){
+  let filter='',type='',page=0,sortKey='id',sortDir=1;
+  const all=Object.values(DB.npcs);
+  const types=[...new Set(all.map(n=>n.type))].sort();
+  function render(){
+    let rows=all.filter(n=>{ if(type&&n.type!==type)return false;
+      if(filter){const f=filter.toLowerCase(); if(!n.name.toLowerCase().includes(f)&&String(n.id)!==filter)return false;} return true;});
+    rows.sort((a,b)=>{let x=a[sortKey],y=b[sortKey]; if(typeof x==='string'){x=x.toLowerCase();y=(y||'').toLowerCase();} return (x>y?1:x<y?-1:0)*sortDir;});
+    const total=rows.length;const pages=Math.ceil(total/PAGE);page=Math.min(page,Math.max(0,pages-1));
+    content.querySelector('#tbody').innerHTML=rows.slice(page*PAGE,page*PAGE+PAGE).map(n=>`<tr>
+      <td>${n.id}</td><td><a href="#npc/${n.id}">${esc(n.name)}</a></td>
+      <td>${n.level||''}</td><td><span class="type-pill">${esc(n.type)}</span></td>
+      <td>${esc(n.race||'')}</td><td>${n.drops.length?('sim ('+n.drops.reduce((s,g)=>s+g.items.length,0)+')'):'-'}</td>
+      <td>${n.spawnCount||0}</td></tr>`).join('');
+    content.querySelector('#info').textContent=`${fmt(total)} npcs · pagina ${page+1}/${pages||1}`;
+    content.querySelector('#prev').disabled=page<=0;content.querySelector('#next').disabled=page>=pages-1;
+  }
+  content.innerHTML=`<h2 class="page">👹 NPCs / Mobs</h2>
+    <div class="row"><div class="filter"><input id="f" placeholder="Filtrar por nome ou ID..."></div>
+      <select id="ftype"><option value="">Todos os tipos</option>${types.map(t=>`<option>${t}</option>`).join('')}</select></div>
+    <div class="muted" id="info" style="margin-bottom:8px"></div>
+    <table><thead><tr><th data-k="id">ID</th><th data-k="name">Nome</th><th data-k="level">Lv</th>
+      <th data-k="type">Tipo</th><th>Raça</th><th>Drops</th><th data-k="spawnCount">Spawns</th></tr></thead>
+      <tbody id="tbody"></tbody></table>
+    <div class="pager"><button class="btn" id="prev">← Anterior</button><button class="btn" id="next">Próximo →</button></div>`;
+  content.querySelector('#f').oninput=e=>{filter=e.target.value;page=0;render();};
+  content.querySelector('#ftype').onchange=e=>{type=e.target.value;page=0;render();};
+  content.querySelector('#prev').onclick=()=>{page--;render();window.scrollTo(0,0);};
+  content.querySelector('#next').onclick=()=>{page++;render();window.scrollTo(0,0);};
+  content.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1;}render();});
+  render();
+}
+function listSkills(){
+  let filter='',page=0;
+  const all=Object.values(DB.skills);
+  function render(){
+    let rows=all.filter(s=>{if(filter){const f=filter.toLowerCase();return s.name.toLowerCase().includes(f)||String(s.id)===filter;}return true;});
+    rows.sort((a,b)=>a.id-b.id);
+    const total=rows.length;const pages=Math.ceil(total/PAGE);page=Math.min(page,Math.max(0,pages-1));
+    content.querySelector('#tbody').innerHTML=rows.slice(page*PAGE,page*PAGE+PAGE).map(s=>`<tr>
+      <td>${s.id}</td><td><a href="#skill/${s.id}">${esc(s.name)}</a></td><td>${s.levels}</td></tr>`).join('');
+    content.querySelector('#info').textContent=`${fmt(total)} skills · pagina ${page+1}/${pages||1}`;
+    content.querySelector('#prev').disabled=page<=0;content.querySelector('#next').disabled=page>=pages-1;
+  }
+  content.innerHTML=`<h2 class="page">✨ Skills</h2>
+    <div class="row"><div class="filter"><input id="f" placeholder="Filtrar por nome ou ID..."></div></div>
+    <div class="muted" id="info" style="margin-bottom:8px"></div>
+    <table><thead><tr><th>ID</th><th>Nome</th><th>Níveis</th></tr></thead><tbody id="tbody"></tbody></table>
+    <div class="pager"><button class="btn" id="prev">← Anterior</button><button class="btn" id="next">Próximo →</button></div>`;
+  content.querySelector('#f').oninput=e=>{filter=e.target.value;page=0;render();};
+  content.querySelector('#prev').onclick=()=>{page--;render();window.scrollTo(0,0);};
+  content.querySelector('#next').onclick=()=>{page++;render();window.scrollTo(0,0);};
+  render();
+}
+function listRecipes(){
+  let filter='',page=0;
+  function render(){
+    let rows=DB.recipes.filter(r=>{if(!filter)return true;const f=filter.toLowerCase();
+      return (r.name||'').toLowerCase().includes(f) || (r.production&&itemName(r.production.id).toLowerCase().includes(f)) || String(r.recipeId)===filter;});
+    const total=rows.length;const pages=Math.ceil(total/PAGE);page=Math.min(page,Math.max(0,pages-1));
+    content.querySelector('#tbody').innerHTML=rows.slice(page*PAGE,page*PAGE+PAGE).map(r=>`<tr>
+      <td>${r.production?itemLink(r.production.id):'-'}</td>
+      <td>${r.type}</td><td>${r.craftLevel}</td><td>${r.successRate}%</td>
+      <td>${r.ingredients.map(g=>esc(itemName(g.id))+' ×'+g.count).join(', ')}</td>
+      <td>${r.recipeId?itemLink(r.recipeId):'-'}</td></tr>`).join('');
+    content.querySelector('#info').textContent=`${fmt(total)} receitas · pagina ${page+1}/${pages||1}`;
+    content.querySelector('#prev').disabled=page<=0;content.querySelector('#next').disabled=page>=pages-1;
+  }
+  content.innerHTML=`<h2 class="page">🧪 Receitas</h2>
+    <div class="row"><div class="filter"><input id="f" placeholder="Filtrar por produto/nome/recipeId..."></div></div>
+    <div class="muted" id="info" style="margin-bottom:8px"></div>
+    <table><thead><tr><th>Produz</th><th>Tipo</th><th>Lv</th><th>Sucesso</th><th>Ingredientes</th><th>Recipe Book</th></tr></thead>
+    <tbody id="tbody"></tbody></table>
+    <div class="pager"><button class="btn" id="prev">← Anterior</button><button class="btn" id="next">Próximo →</button></div>`;
+  content.querySelector('#f').oninput=e=>{filter=e.target.value;page=0;render();};
+  content.querySelector('#prev').onclick=()=>{page--;render();window.scrollTo(0,0);};
+  content.querySelector('#next').onclick=()=>{page++;render();window.scrollTo(0,0);};
+  render();
+}
+function listShops(kind){
+  const data=kind==='multisell'?DB.multisell:DB.buylists;
+  const title=kind==='multisell'?'🔁 Multisell (trocas / craft)':'🏪 Buylists (lojas de venda)';
+  const keys=Object.keys(data).sort((a,b)=>+a-+b);
+  content.innerHTML=`<h2 class="page">${title}</h2>
+    <div class="muted" style="margin-bottom:8px">${keys.length} listas</div>
+    <table><thead><tr><th>ID</th><th>Itens</th><th>NPCs vinculados</th></tr></thead><tbody>${
+      keys.map(k=>{const d=data[k];const n=kind==='multisell'?d.entries.length:d.items.length;
+        return `<tr><td><a href="#${kind==='multisell'?'ms':'bl'}/${k}">${k}</a></td><td>${n}</td>
+        <td>${(d.npcs||[]).slice(0,6).map(npcLink).join(', ')||'<span class="empty">nenhum</span>'}</td></tr>`;}).join('')
+    }</tbody></table>`;
+}
+function viewEnchant(){
+  content.innerHTML=`<h2 class="page">🔨 Enchant</h2>
+    <div class="card"><h3>Scrolls (${DB.enchant.scrolls.length})</h3>
+    <table><thead><tr><th>Scroll (item)</th><th>Grade alvo</th><th>Enchant máx</th><th>Bônus</th><th>Grupo</th></tr></thead><tbody>${
+      DB.enchant.scrolls.map(s=>`<tr><td>${s.id?itemLink(s.id):'-'}</td><td>${s.targetGrade||'-'}</td>
+      <td>${s.maxEnchant??'-'}</td><td>${s.bonusRate??'-'}</td><td>${s.scrollGroupId??'0'}</td></tr>`).join('')
+    }</tbody></table></div>
+    <div class="card"><h3>Grupos de chance</h3>${
+      DB.enchant.groups.map(g=>`<div style="margin:8px 0"><b>${esc(g.name)}</b>: ${
+        g.ranges.map(r=>`+${r.enchant} → <span class="chance">${r.chance}%</span>`).join(' · ')}</div>`).join('')
+    }</div>
+    <p class="muted">Detalhes e receitas em <a href="index.html#doc-05">Guia de Enchant</a>.</p>`;
+}
+
+// ---- DETALHES ----
+function block(title, html){ return `<div class="card"><h3>${title}</h3>${html||'<span class="empty">—</span>'}</div>`; }
+function detailItem(id){
+  const it=DB.items[id]; if(!it){content.innerHTML='<p>Item nao encontrado</p>';return;}
+  const statRows=Object.entries(it.stats).map(([k,v])=>`<div><span class="k">${esc(k)}</span><span>${esc(v)}</span></div>`).join('');
+  const info=[['ID',it.id],['Tipo',it.type],['Grade',it.grade],['Slot/Arma',it.weaponType||it.slot||'-'],
+    ['Material',it.material||'-'],['Peso',fmt(it.weight)],['Preço',fmt(it.price)],
+    ['Enchantável',it.enchantable?'sim':'não'],['Ícone (client)',it.icon||'-']]
+    .map(([k,v])=>`<div><span class="k">${k}</span><span>${esc(v)}</span></div>`).join('');
+  // Como obter
+  let obtain='';
+  const craft=it.producedBy.filter(p=>p.kind==='recipe');
+  const msProd=it.producedBy.filter(p=>p.kind==='multisell');
+  if(craft.length) obtain+=`<div><b>Craft (receita):</b><div class="list-links">`+craft.map(c=>
+    `<div class="li">🧪 ${c.type||'dwarven'} · lv ${c.craftLevel} · <span class="chance">${c.success}%</span> · Book: ${c.recipeId?itemLink(c.recipeId):'-'}<br>
+     <span class="muted">Precisa:</span> ${c.ingredients.map(g=>itemLink(g.id)+' ×'+g.count).join(' + ')} → ×${c.count}</div>`).join('')+`</div></div>`;
+  if(msProd.length) obtain+=`<div style="margin-top:8px"><b>Troca (multisell):</b><div class="list-links">`+msProd.map(m=>
+    `<div class="li">🔁 <a href="#ms/${m.file}">multisell ${m.file}</a> — dá ${m.ingredients.map(g=>itemLink(g.id)+' ×'+g.count).join(' + ')} → ×${m.count}
+     ${m.npcs&&m.npcs.length?'<br><span class="muted">Vendedores:</span> '+m.npcs.slice(0,6).map(npcLink).join(', '):''}</div>`).join('')+`</div></div>`;
+  if(it.soldBy.length) obtain+=`<div style="margin-top:8px"><b>Comprar (buylist):</b><div class="list-links">`+it.soldBy.slice(0,40).map(s=>
+    `<div class="li">🏪 <a href="#bl/${s.file}">buylist ${s.file}</a> · ${fmt(s.price)} adena ${s.npcs&&s.npcs.length?'· '+s.npcs.slice(0,5).map(npcLink).join(', '):''}</div>`).join('')+`</div>${it.soldByTotal>40?`<span class="muted">+${it.soldByTotal-40} mais</span>`:''}</div>`;
+  if(it.droppedBy.length) obtain+=`<div style="margin-top:8px"><b>Drop de mobs:</b><div class="list-links">`+it.droppedBy.slice(0,40).map(d=>
+    `<div class="li">👹 ${npcLink(d.npc)} · <span class="chance">${d.chance}%</span> · ${d.min}-${d.max}x</div>`).join('')+`</div>${it.droppedByTotal>40?`<span class="muted">+${it.droppedByTotal-40} de ${it.droppedByTotal} mobs</span>`:''}</div>`;
+  if(it.spoiledBy.length) obtain+=`<div style="margin-top:8px"><b>Spoil:</b><div class="list-links">`+it.spoiledBy.slice(0,25).map(d=>
+    `<div class="li">🪓 ${npcLink(d.npc)} · <span class="chance">${d.chance}%</span> · ${d.min}-${d.max}x</div>`).join('')+`</div></div>`;
+  // Usado em
+  let usedHtml='';
+  if(it.usedIn.length){
+    usedHtml=`<div class="list-links">`+it.usedIn.slice(0,60).map(u=> u.kind==='recipe'
+      ? `<div class="li">🧪 ingrediente da receita de ${u.product?itemLink(u.product):'?'} (×${u.count})</div>`
+      : `<div class="li">🔁 ingrediente em <a href="#ms/${u.file}">multisell ${u.file}</a> → ${u.product?itemLink(u.product):'?'} (×${u.count})</div>`
+    ).join('')+`</div>`+ (it.usedInTotal>60?`<span class="muted">+${it.usedInTotal-60} de ${it.usedInTotal}</span>`:'');
+  }
+  const modelMap={Weapon:'model.item.Weapon',Armor:'model.item.Armor',EtcItem:'model.item.EtcItem'};
+  const dev=devCard({
+    file: it.file || 'data/stats/items/????.xml',
+    parser:'org.l2jmobius.gameserver.data.xml.ItemData',
+    model:'org.l2jmobius.gameserver.'+(modelMap[it.type]||'model.item.ItemTemplate')+' · instância: model.item.instance.Item',
+    reload:'reiniciar o Game Server (itens não têm //reload isolado)',
+    guide:'index.html#doc-03', guideLabel:'Guia de Itens',
+    change:[
+      'Bloco <stats>: pAtk, mAtk, pDef, mDef, critRate, pAtkSpd, pAtkRange…',
+      '<set name="crystal_type"> = grade (NONE, D, C, B, A, S)',
+      '<set name="price"> e "weight"',
+      '<set name="enchant_enabled"> (permite/bloqueia enchant)',
+      '<set name="soulshots"/"spiritshots"> (consumo por golpe)',
+      '<set name="bodypart"> (slot) e "weapon_type"',
+      '<set name="icon"> (referência à textura do client)',
+      '<set name="material"> (som/aparência)'
+    ],
+    test:['//create_item '+it.id+' 1'],
+    notes:'Item novo aparece com nome/ícone só se o mesmo ID existir no client (itemname-e.dat / weapongrp). Ver Guia Client-Side (doc 09).'
+  });
+  content.innerHTML=`
+    <div class="det-head">${iconBox(it)}<div><h2>${esc(it.name)}</h2>
+      <div class="det-sub">${gradeBadge(it.grade)}<span class="type-pill">${esc(it.type)}</span>
+      <span class="chip">ID ${it.id}</span>${it.weaponType?`<span class="chip">${esc(it.weaponType)}</span>`:''}</div></div></div>
+    ${block('Dados', `<div class="kv">${info}</div>`)}
+    ${statRows?block('Stats', `<div class="kv">${statRows}</div>`):''}
+    ${dev}
+    ${block('Como obter', obtain||'<span class="empty">Sem receita/drop/loja conhecidos (pode ser dado por GM/quest).</span>')}
+    ${block('Usado em (craft/troca)', usedHtml)}
+    ${block('Configuração bruta (XML sets)', `<details><summary>ver todos os campos do XML</summary><pre>${esc(JSON.stringify(it.sets,null,2))}</pre></details>`)}
+  `;
+}
+function detailNpc(id){
+  const n=DB.npcs[id]; if(!n){content.innerHTML='<p>NPC nao encontrado</p>';return;}
+  const info=[['ID',n.id],['Nível',n.level],['Tipo',n.type],['Raça',n.race||'-'],['Sexo',n.sex||'-'],
+    ['EXP',fmt(n.exp)],['SP',fmt(n.sp)],['HP',fmt(n.hp)],['MP',fmt(n.mp)],
+    ['Agressivo',n.aggressive?'sim':'não'],['Aggro range',n.aggroRange??'-'],['Spawns no mundo',n.spawnCount]]
+    .map(([k,v])=>`<div><span class="k">${k}</span><span>${esc(v)}</span></div>`).join('');
+  let drops='';
+  if(n.drops.length){ drops=n.drops.map((g,i)=>`<div style="margin:6px 0"><span class="chip">grupo ${i+1} · ${g.groupChance}%</span>
+    <div class="list-links">${g.items.map(it=>`<div class="li">${itemLink(it.id)} · <span class="chance">${it.chance}%</span> · ${it.min}-${it.max}x</div>`).join('')}</div></div>`).join(''); }
+  let spoil = n.spoil.length? `<div class="list-links">${n.spoil.map(it=>`<div class="li">${itemLink(it.id)} · <span class="chance">${it.chance}%</span> · ${it.min}-${it.max}x</div>`).join('')}</div>`:'';
+  let spawns = n.spawns.length? `<div class="list-links">${n.spawns.map(s=>`<div class="li">📍 ${esc(s.area)} · (${s.x}, ${s.y}, ${s.z})</div>`).join('')}</div>${n.spawnCount>n.spawns.length?`<span class="muted">+${n.spawnCount-n.spawns.length} spawns</span>`:''}`:'';
+  let sells='';
+  if(n.sells.length){ sells=`<div class="list-links">${n.sells.map(s=> s.kind==='buylist'
+    ? `<div class="li">🏪 <a href="#bl/${s.file}">buylist ${s.file}</a> (${s.count} itens à venda)</div>`
+    : `<div class="li">🔁 <a href="#ms/${s.file}">multisell ${s.file}</a></div>`).join('')}</div>`; }
+  const dev=devCard({
+    file: n.file || 'data/stats/npcs/????.xml',
+    parser:'org.l2jmobius.gameserver.data.xml.NpcData',
+    model:'org.l2jmobius.gameserver.model.actor.templates.NpcTemplate',
+    reload:'//reload npc',
+    guide:'index.html#doc-04', guideLabel:'Guia de NPCs e Lojas',
+    change:[
+      'level, race, sex, type (Monster, Merchant, RaidBoss…)',
+      '<acquire exp / sp> (recompensa ao matar)',
+      '<stats>: vitals (hp/mp), attack, defence, speed',
+      '<ai isAggressive / aggroRange>',
+      '<skillList> (skills do NPC)',
+      '<dropLists>: <drop>/<group>/<item> (drops) e <spoil> — ver doc 06'
+    ],
+    extraPaths:[{label:'Spawns (posições)', path:'data/spawns/** (procure o id '+n.id+')'}],
+    test:['//spawn '+n.id, '//loc'],
+    notes:'Os spawns NÃO ficam neste arquivo — estão em data/spawns/**. Drops/spoil ficam no bloco <dropLists> deste XML.'
+  });
+  content.innerHTML=`
+    <div class="det-head"><div class="ico" style="background:#334155">${esc((n.name||'?')[0])}</div>
+      <div><h2>${esc(n.name)}</h2><div class="det-sub"><span class="type-pill">${esc(n.type)}</span>
+      <span class="chip">ID ${n.id}</span><span class="chip">Lv ${n.level}</span></div></div></div>
+    ${block('Dados', `<div class="kv">${info}</div>`)}
+    ${dev}
+    ${block('Drops', drops)}
+    ${block('Spoil', spoil)}
+    ${block('Localização (spawns)', spawns)}
+    ${block('Vende (loja)', sells)}
+  `;
+}
+function detailSkill(id){
+  const s=DB.skills[id]; if(!s){content.innerHTML='<p>Skill nao encontrada</p>';return;}
+  content.innerHTML=`<div class="det-head"><div class="ico" style="background:#7c3aed">✨</div>
+    <div><h2>${esc(s.name)}</h2><div class="det-sub"><span class="chip">ID ${s.id}</span><span class="chip">${s.levels} níveis</span></div></div></div>
+    ${block('Dados', `<div class="kv"><div><span class="k">ID</span><span>${s.id}</span></div>
+      <div><span class="k">Níveis</span><span>${s.levels}</span></div>
+      <div><span class="k">operateType</span><span>${esc(s.operateType||'-')}</span></div></div>`)}
+    ${devCard({
+      file: s.file || 'data/stats/skills/????.xml',
+      parser:'org.l2jmobius.gameserver.data.xml.SkillData',
+      model:'org.l2jmobius.gameserver.model.skill.Skill',
+      reload:'//reload skill',
+      guide:'index.html#doc-08', guideLabel:'Guia de Código-Fonte',
+      change:['levels (quantos níveis)','power / dano por nível','effects / abnormal (buffs, debuffs)','reuseDelay, hitTime, mpConsume','targetType, affectRange (área)'],
+      notes:'Descrições por nível ficam em comentários no XML. Efeitos complexos podem depender de handlers em data/scripts/handlers/skill.'
+    })}`;
+}
+function detailMs(file){
+  const ms=DB.multisell[file]; if(!ms){content.innerHTML='<p>Multisell nao encontrado</p>';return;}
+  content.innerHTML=`<h2 class="page">🔁 Multisell ${esc(file)}</h2>
+    ${block('NPCs vinculados', (ms.npcs&&ms.npcs.length)?ms.npcs.map(npcLink).join(', '):'<span class="empty">nenhum (chamado via bypass no HTML)</span>')}
+    ${devCard({
+      file: ms.file || ('data/multisell/'+file+'.xml'),
+      parser:'org.l2jmobius.gameserver.data.xml.MultisellData',
+      model:'org.l2jmobius.gameserver.model.multisell.MultisellListHolder',
+      reload:'//reload multisell',
+      guide:'index.html#doc-04', guideLabel:'Guia de NPCs e Lojas',
+      change:['<ingredient id count> (o que o jogador paga)','<production id count> (o que recebe)','<npcs> (quais NPCs abrem)','list: maintainEnchantment, applyTaxes, isChanceMultisell'],
+      notes:'Abre no jogo via bypass npc_%objectId%_multisell '+file+' no HTML do NPC.'
+    })}
+    ${block('Trocas ('+ms.entries.length+')', `<div class="list-links">${ms.entries.map(e=>
+      `<div class="li"><span class="muted">Dá:</span> ${e.ingredients.map(g=>itemLink(g.id)+' ×'+g.count).join(' + ')}
+       → <span class="muted">Recebe:</span> ${e.production.map(g=>itemLink(g.id)+' ×'+g.count).join(' + ')}</div>`).join('')}</div>`)}`;
+}
+function detailBl(file){
+  const bl=DB.buylists[file]; if(!bl){content.innerHTML='<p>Buylist nao encontrada</p>';return;}
+  content.innerHTML=`<h2 class="page">🏪 Buylist ${esc(file)}</h2>
+    ${block('NPCs vendedores', (bl.npcs&&bl.npcs.length)?bl.npcs.map(npcLink).join(', '):'<span class="empty">nenhum vinculado</span>')}
+    ${devCard({
+      file: bl.file || ('data/buylists/'+file+'.xml'),
+      parser:'org.l2jmobius.gameserver.data.xml.BuyListData',
+      model:'org.l2jmobius.gameserver.model.buylist.ProductList',
+      reload:'//reload buylist',
+      guide:'index.html#doc-04', guideLabel:'Guia de NPCs e Lojas',
+      change:['<item id price> (item vendido e preço em adena)','count / restock_delay (estoque que repõe)','<npcs> (quais NPCs abrem esta loja)'],
+      notes:'Abre no jogo via bypass npc_%objectId%_Buy '+file+' no HTML do NPC.'
+    })}
+    ${block('Itens à venda ('+bl.items.length+')', `<div class="list-links">${bl.items.map(it=>
+      `<div class="li">${itemLink(it.id)} · ${fmt(it.price)} adena${it.count?` · estoque ${it.count}`:''}</div>`).join('')}</div>`)}`;
+}
+
+// ---- Dashboard ----
+function dashboard(){
+  const c=DB.meta.counts;
+  content.innerHTML=`<h2 class="page">📊 L2 DB Explorer</h2>
+    <p class="muted">Banco de dados navegável gerado do datapack do <b>seu</b> servidor. Busque por ID/nome no topo, ou explore por categoria. Clique em qualquer item/npc para ver todos os dados e navegar pelas receitas (ingrediente → item base).</p>
+    <div class="cards-grid" style="margin-top:16px">
+      <div class="stat-card" onclick="location.hash='#items'"><div class="n">${fmt(c.items)}</div><div class="l">⚔️ Itens</div></div>
+      <div class="stat-card" onclick="location.hash='#npcs'"><div class="n">${fmt(c.npcs)}</div><div class="l">👹 NPCs / Mobs</div></div>
+      <div class="stat-card" onclick="location.hash='#skills'"><div class="n">${fmt(c.skills)}</div><div class="l">✨ Skills</div></div>
+      <div class="stat-card" onclick="location.hash='#recipes'"><div class="n">${fmt(c.recipes)}</div><div class="l">🧪 Receitas</div></div>
+      <div class="stat-card" onclick="location.hash='#multisell'"><div class="n">${fmt(c.multisell)}</div><div class="l">🔁 Multisell</div></div>
+      <div class="stat-card" onclick="location.hash='#buylists'"><div class="n">${fmt(c.buylists)}</div><div class="l">🏪 Buylists</div></div>
+    </div>
+    <div class="card" style="margin-top:18px"><h3>Como usar</h3>
+      <ul>
+        <li><b>Buscar:</b> digite nome ou ID no topo (itens, npcs, skills).</li>
+        <li><b>Cadeia de craft:</b> abra um item → em "Como obter", clique num ingrediente → veja a receita dele, e assim por diante até o item base.</li>
+        <li><b>Sellers:</b> em buylists/multisell você vê quais NPCs vendem/trocam.</li>
+        <li><b>Ícones:</b> placeholder por grade. Para usar as artes reais, coloque PNGs em <code>docs/modding/icons/&lt;itemId&gt;.png</code>.</li>
+      </ul>
+      <p class="muted">Regerar após editar o datapack: <code>node scripts/build-db.mjs</code>. Guias em <a href="index.html">Documentação</a>.</p>
+      <p class="muted">Gerado em: ${esc(DB.meta.generatedAt)}</p>
+    </div>`;
+}
+
+// ---- Router ----
+function setActive(route){ document.querySelectorAll('.nav-link[data-route]').forEach(a=>a.classList.toggle('active',a.dataset.route===route)); }
+function route(){
+  const h=location.hash.slice(1);
+  document.body.classList.remove('nav-open');
+  window.scrollTo(0,0);
+  if(!h||h==='home'){ setActive('home'); return dashboard(); }
+  const [r,arg]=h.split('/');
+  if(r==='item'){ setActive('items'); return detailItem(+arg); }
+  if(r==='npc'){ setActive('npcs'); return detailNpc(+arg); }
+  if(r==='skill'){ setActive('skills'); return detailSkill(+arg); }
+  if(r==='ms'){ setActive('multisell'); return detailMs(arg); }
+  if(r==='bl'){ setActive('buylists'); return detailBl(arg); }
+  if(r==='items'){ setActive('items'); return listItems(); }
+  if(r==='npcs'){ setActive('npcs'); return listNpcs(); }
+  if(r==='skills'){ setActive('skills'); return listSkills(); }
+  if(r==='recipes'){ setActive('recipes'); return listRecipes(); }
+  if(r==='multisell'){ setActive('multisell'); return listShops('multisell'); }
+  if(r==='buylists'){ setActive('buylists'); return listShops('buylists'); }
+  if(r==='enchant'){ setActive('enchant'); return viewEnchant(); }
+  dashboard();
+}
+document.querySelectorAll('.nav-link[data-route]').forEach(a=>a.addEventListener('click',()=>location.hash='#'+a.dataset.route));
+
+// ---- init ----
+function init(){
+  if(!DB){ content.innerHTML='<p style="color:#dc2626">Erro: db.js não carregou. Rode <code>node scripts/build-db.mjs</code>.</p>'; return; }
+  const c=DB.meta.counts;
+  document.getElementById('c-items').textContent=fmt(c.items);
+  document.getElementById('c-npcs').textContent=fmt(c.npcs);
+  document.getElementById('c-skills').textContent=fmt(c.skills);
+  document.getElementById('c-recipes').textContent=fmt(c.recipes);
+  document.getElementById('c-multisell').textContent=fmt(c.multisell);
+  document.getElementById('c-buylists').textContent=fmt(c.buylists);
+  buildSearch();
+  window.addEventListener('hashchange',route);
+  route();
+}
+// tema
+const themeBtn=document.getElementById('themeBtn');
+themeBtn.onclick=()=>{const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',t);localStorage.setItem('l2db-theme',t);};
+const savedT=localStorage.getItem('l2db-theme'); if(savedT)document.documentElement.setAttribute('data-theme',savedT);
+document.getElementById('menuBtn').onclick=()=>document.body.classList.toggle('nav-open');
+document.getElementById('backdrop').onclick=()=>document.body.classList.remove('nav-open');
+init();
+</script>
+</body>
+</html>

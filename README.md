@@ -27,6 +27,7 @@ l2ServerTest/
 | — | [COMANDOS_BANCO.md](docs/COMANDOS_BANCO.md) — comandos SQL para GM, contas, itens |
 | — | [modding/00_INDICE.md](docs/modding/00_INDICE.md) — **guia de customização** (itens, NPCs, lojas, enchant, drops, código, client) |
 | — | [modding/index.html](docs/modding/index.html) — **versão navegável no navegador** (mesma doc, com busca e diagramas). Regenerar: `scripts/build-docs-html.ps1` |
+| — | [modding/db.html](docs/modding/db.html) — **Explorador de Dados** (itens, npcs, receitas, drops, sellers, enchant, skills) gerado do datapack. Regenerar: `node scripts/build-db.mjs` |
 
 ### Configuração local (não versionada)
 
