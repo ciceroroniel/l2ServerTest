@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ============================================================= -->
+<!-- Spawns CUSTOM para teste, no centro de Giran (perto da Clarissa).-->
+<!-- Buffer (50008) e Vendor de itens custom (50010).               -->
+<!-- ============================================================= -->
+<list enabled="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../xsd/spawns.xsd">
+	<spawn name="CustomTestNPCs">
+		<npc id="50008" x="83330" y="147966" z="-3404" heading="49150" respawnDelay="60" /> <!-- Scheme Buffer (Thiago) -->
+		<npc id="50010" x="83462" y="147966" z="-3404" heading="16384" respawnDelay="60" /> <!-- Custom Vendor -->
+	</spawn>
+</list>

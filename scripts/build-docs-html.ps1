@@ -23,6 +23,7 @@ $order = @(
     @{ n = '08'; title = 'Codigo-Fonte';        icon = 'code' }
     @{ n = '09'; title = 'Client-Side';         icon = 'monitor' }
     @{ n = '10'; title = 'Receitas Praticas';   icon = 'book' }
+    @{ n = '11'; title = 'Pipeline: Exemplos';  icon = 'rocket' }
 )
 
 $navSb = [System.Text.StringBuilder]::new()

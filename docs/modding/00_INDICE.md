@@ -20,6 +20,7 @@ e receitas de ponta a ponta.
 | 8 | [08_CODIGO_FONTE.md](08_CODIGO_FONTE.md) | Mapa do código Java para modders |
 | 9 | [09_CLIENT_SIDE.md](09_CLIENT_SIDE.md) | Editar o client (nomes, ícones, meshes) |
 | 10 | [10_RECEITAS_PRATICAS.md](10_RECEITAS_PRATICAS.md) | 4 casos completos passo a passo |
+| 11 | [11_PIPELINE_EXEMPLOS.md](11_PIPELINE_EXEMPLOS.md) | Pipeline completo até o teste: NPC buffer, cap +10% HP/CP, tattoo de cast speed |
 
 ## A regra de ouro (leia antes de tudo)
 

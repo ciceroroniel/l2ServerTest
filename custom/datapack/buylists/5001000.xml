@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Buylist do Custom Vendor (npc 50010). Vende nossos itens custom. -->
+<list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/buylist.xsd">
+	<npcs>
+		<npc>50010</npc> <!-- Custom Vendor -->
+	</npcs>
+	<item id="30010" price="1000000" /> <!-- Cap of Vitality (+10% HP/CP) -->
+	<item id="30011" price="1000000" /> <!-- Mystic Tattoo (+10% cast speed) -->
+</list>

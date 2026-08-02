@@ -28,6 +28,8 @@ l2ServerTest/
 | — | [modding/00_INDICE.md](docs/modding/00_INDICE.md) — **guia de customização** (itens, NPCs, lojas, enchant, drops, código, client) |
 | — | [modding/index.html](docs/modding/index.html) — **versão navegável no navegador** (mesma doc, com busca e diagramas). Regenerar: `scripts/build-docs-html.ps1` |
 | — | [modding/db.html](docs/modding/db.html) — **Explorador de Dados** (itens, npcs, receitas, drops, sellers, enchant, skills) gerado do datapack. Regenerar: `node scripts/build-db.mjs` |
+| — | [modding/11_PIPELINE_EXEMPLOS.md](docs/modding/11_PIPELINE_EXEMPLOS.md) — **pipeline completo** (buffer, cap +HP/CP, tattoo cast speed) do zero ao teste |
+| — | [custom/](custom/README.md) — **customizações versionadas** (itens/npcs/skills custom + spawns). Deploy: `scripts/deploy-custom.ps1` |
 
 ### Configuração local (não versionada)
 

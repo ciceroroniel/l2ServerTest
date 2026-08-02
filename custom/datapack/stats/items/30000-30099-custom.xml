@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ============================================================= -->
+<!-- Itens CUSTOM do nosso servidor (faixa livre 30000-30099).      -->
+<!-- Cada item concede uma skill passiva (stats/skills/30000-*.xml).-->
+<!-- Guia: docs/modding/11_PIPELINE_EXEMPLOS.md                      -->
+<!-- ============================================================= -->
+<list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../xsd/items.xsd">
+
+	<!-- Cap of Vitality: capacete que da +10% HP e +10% CP -->
+	<item id="30010" type="Armor" name="Cap of Vitality">
+		<set name="icon" val="icon.armor_cloth_helmet_i00" />
+		<set name="default_action" val="EQUIP" />
+		<set name="bodypart" val="head" />
+		<set name="immediate_effect" val="true" />
+		<set name="material" val="FINE_STEEL" />
+		<set name="weight" val="150" />
+		<set name="price" val="1000000" />
+		<stats>
+			<stat type="pDef">40</stat>
+		</stats>
+		<skills>
+			<skill id="30010" level="1" /> <!-- +10% HP / +10% CP -->
+		</skills>
+	</item>
+
+	<!-- Mystic Tattoo: tatuagem (slot underwear) para magos, +10% cast speed -->
+	<item id="30011" type="Armor" name="Mystic Tattoo">
+		<set name="icon" val="icon.accessary_earring_of_wisdom_i00" />
+		<set name="default_action" val="EQUIP" />
+		<set name="bodypart" val="underwear" />
+		<set name="immediate_effect" val="true" />
+		<set name="material" val="CLOTH" />
+		<set name="weight" val="50" />
+		<set name="price" val="1000000" />
+		<stats>
+			<stat type="mDef">10</stat>
+		</stats>
+		<skills>
+			<skill id="30011" level="1" /> <!-- +10% cast speed -->
+		</skills>
+	</item>
+
+</list>

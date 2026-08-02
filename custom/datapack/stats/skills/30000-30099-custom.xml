@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ============================================================= -->
+<!-- Skills CUSTOM do nosso servidor (faixa livre 30000-30099).     -->
+<!-- Passivas concedidas por itens (ver stats/items/30000-*.xml).   -->
+<!-- Guia: docs/modding/11_PIPELINE_EXEMPLOS.md                      -->
+<!-- ============================================================= -->
+<list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../xsd/skills.xsd">
+
+	<!-- Cap of Vitality: +10% HP e +10% CP (passiva do item 30010) -->
+	<skill id="30010" levels="1" name="Vitality Cap">
+		<operateType>P</operateType>
+		<targetType>SELF</targetType>
+		<effects>
+			<effect name="Buff">
+				<mul stat="maxHp">1.1</mul>
+				<mul stat="maxCp">1.1</mul>
+			</effect>
+		</effects>
+	</skill>
+
+	<!-- Mystic Tattoo: +10% velocidade de cast (passiva do item 30011) -->
+	<skill id="30011" levels="1" name="Mystic Tattoo">
+		<operateType>P</operateType>
+		<targetType>SELF</targetType>
+		<effects>
+			<effect name="Buff">
+				<mul stat="mAtkSpd">1.1</mul>
+			</effect>
+		</effects>
+	</skill>
+
+</list>

@@ -121,7 +121,7 @@ for (const f of listFiles(path.join(DATA, 'stats', 'items'))) {
 }
 
 // ---- NPCS (+ drops/spoil) --------------------------------------------------
-for (const f of listFiles(path.join(DATA, 'stats', 'npcs'))) {
+for (const f of listFiles(path.join(DATA, 'stats', 'npcs'), true)) { // recursive: inclui npcs/custom/
   const root = readXML(f);
   const fileRel = rel(f);
   const list = kid(root, 'list') || root;
