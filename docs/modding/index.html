@@ -1,0 +1,1977 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Customizacao - L2J Mobius Interlude</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<style>
+  :root{
+    --bg:#f7f8fa; --panel:#ffffff; --ink:#1f2430; --muted:#6b7280; --line:#e6e8ec;
+    --brand:#7c3aed; --brand2:#4f46e5; --accent:#0ea5e9; --code-bg:#0d1117;
+    --shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.04);
+    --sidebar:290px;
+  }
+  [data-theme="dark"]{
+    --bg:#0f1115; --panel:#161a22; --ink:#e6e8ee; --muted:#9aa3b2; --line:#242a35;
+    --brand:#a78bfa; --brand2:#818cf8; --accent:#38bdf8; --code-bg:#0b0e14;
+    --shadow:0 1px 3px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--brand2); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* Layout */
+  .app{display:flex; min-height:100vh}
+  .sidebar{
+    width:var(--sidebar); flex:0 0 var(--sidebar); position:sticky; top:0; height:100vh;
+    background:var(--panel); border-right:1px solid var(--line); display:flex; flex-direction:column;
+  }
+  .brand{padding:18px 20px 12px; border-bottom:1px solid var(--line)}
+  .brand h1{font-size:15px; margin:0; letter-spacing:.2px}
+  .brand p{margin:4px 0 0; font-size:12px; color:var(--muted)}
+  .search{padding:12px 14px}
+  .search input{
+    width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:10px;
+    background:var(--bg); color:var(--ink); font-size:13px; outline:none;
+  }
+  .search input:focus{border-color:var(--brand)}
+  nav{padding:4px 10px 16px; overflow-y:auto; flex:1}
+  .nav-link{
+    display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px;
+    color:var(--ink); font-size:13.5px; margin:2px 0;
+  }
+  .nav-link:hover{background:var(--bg); text-decoration:none}
+  .nav-link.active{background:linear-gradient(90deg,var(--brand),var(--brand2)); color:#fff}
+  .nav-link .num{
+    flex:0 0 auto; min-width:22px; height:22px; padding:0 7px; border-radius:7px; font-size:11px;
+    display:flex; align-items:center; justify-content:center; background:var(--bg); color:var(--muted);
+    border:1px solid var(--line); font-weight:600;
+  }
+  .nav-link.active .num{background:rgba(255,255,255,.22); color:#fff; border-color:transparent}
+  .nav-link .txt{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+  /* Main */
+  .main{flex:1; min-width:0; display:flex; flex-direction:column}
+  .topbar{
+    position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:12px;
+    background:color-mix(in srgb,var(--panel) 85%,transparent); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line); padding:10px 26px;
+  }
+  .topbar .crumb{font-size:13px; color:var(--muted); flex:1; min-width:0;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .topbar .crumb b{color:var(--ink)}
+  .icon-btn{
+    border:1px solid var(--line); background:var(--panel); color:var(--ink); cursor:pointer;
+    width:36px; height:36px; border-radius:9px; font-size:15px; display:flex; align-items:center; justify-content:center;
+  }
+  .icon-btn:hover{border-color:var(--brand)}
+  .menu-btn{display:none}
+
+  .content{
+    max-width:880px; width:100%; margin:0 auto; padding:34px 26px 80px;
+  }
+  .content h1{font-size:30px; line-height:1.25; margin:.2em 0 .5em; letter-spacing:-.3px}
+  .content h2{font-size:22px; margin:1.6em 0 .6em; padding-bottom:.3em; border-bottom:1px solid var(--line)}
+  .content h3{font-size:17px; margin:1.4em 0 .5em}
+  .content h4{font-size:15px; margin:1.2em 0 .4em; color:var(--muted); text-transform:uppercase; letter-spacing:.4px}
+  .content p{margin:.7em 0}
+  .content ul,.content ol{padding-left:1.4em}
+  .content li{margin:.25em 0}
+  .content img{max-width:100%}
+  .content hr{border:0; border-top:1px solid var(--line); margin:2em 0}
+
+  /* Anchor on hover */
+  .content h2,.content h3{scroll-margin-top:70px; position:relative}
+  .content h1{scroll-margin-top:70px}
+
+  /* Tables */
+  .content table{border-collapse:collapse; width:100%; margin:1.1em 0; font-size:14px; display:block; overflow-x:auto}
+  .content th,.content td{border:1px solid var(--line); padding:8px 11px; text-align:left; vertical-align:top}
+  .content thead th{background:var(--bg); font-weight:650}
+  .content tbody tr:nth-child(even){background:color-mix(in srgb,var(--bg) 55%,transparent)}
+
+  /* Inline code */
+  .content :not(pre)>code{
+    background:color-mix(in srgb,var(--brand) 12%,var(--bg)); color:var(--ink);
+    padding:.12em .4em; border-radius:6px; font-size:.88em;
+    font-family:"SF Mono",SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;
+  }
+  /* Code blocks */
+  .content pre{
+    background:var(--code-bg); border:1px solid var(--line); border-radius:12px;
+    padding:16px 18px; overflow-x:auto; margin:1.1em 0; box-shadow:var(--shadow);
+  }
+  .content pre code{font-family:"SF Mono",SFMono-Regular,ui-monospace,Menlo,Consolas,monospace; font-size:13px; line-height:1.6}
+
+  /* Blockquote as callout */
+  .content blockquote{
+    margin:1.1em 0; padding:12px 16px; border-left:4px solid var(--accent);
+    background:color-mix(in srgb,var(--accent) 9%,var(--panel)); border-radius:0 10px 10px 0; color:var(--ink);
+  }
+  .content blockquote p{margin:.3em 0}
+
+  /* Mermaid */
+  .mermaid{margin:1.4em 0; text-align:center; background:var(--panel); border:1px solid var(--line);
+    border-radius:12px; padding:16px; overflow-x:auto}
+
+  /* Prev/Next */
+  .pager{display:flex; gap:12px; margin-top:44px; padding-top:22px; border-top:1px solid var(--line)}
+  .pager a{
+    flex:1; padding:14px 16px; border:1px solid var(--line); border-radius:12px; background:var(--panel);
+    display:flex; flex-direction:column; gap:2px; box-shadow:var(--shadow);
+  }
+  .pager a:hover{border-color:var(--brand); text-decoration:none}
+  .pager .lbl{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px}
+  .pager .ttl{font-size:14px; font-weight:600; color:var(--ink)}
+  .pager .next{text-align:right}
+
+  /* Scrollbar */
+  ::-webkit-scrollbar{width:10px; height:10px}
+  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:8px}
+
+  .backdrop{display:none}
+  @media (max-width:860px){
+    .sidebar{position:fixed; z-index:30; left:0; top:0; transform:translateX(-100%); transition:transform .25s ease}
+    body.nav-open .sidebar{transform:none}
+    body.nav-open .backdrop{display:block; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:20}
+    .menu-btn{display:flex}
+    .content{padding:24px 16px 70px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <h1>Guia de Customizacao</h1>
+      <p>L2J Mobius - Interlude</p>
+    </div>
+    <div class="search"><input id="search" type="search" placeholder="Filtrar secoes..." autocomplete="off"></div>
+    <nav id="nav">
+      <a class="nav-link" href="#doc-00" data-doc="doc-00"><span class="num">Comece aqui</span><span class="txt">Inicio / Indice</span></a>
+      <a class="nav-link" href="#doc-01" data-doc="doc-01"><span class="num">01</span><span class="txt">Arquitetura</span></a>
+      <a class="nav-link" href="#doc-02" data-doc="doc-02"><span class="num">02</span><span class="txt">Estrutura de Pastas</span></a>
+      <a class="nav-link" href="#doc-03" data-doc="doc-03"><span class="num">03</span><span class="txt">Itens</span></a>
+      <a class="nav-link" href="#doc-04" data-doc="doc-04"><span class="num">04</span><span class="txt">NPCs e Lojas</span></a>
+      <a class="nav-link" href="#doc-05" data-doc="doc-05"><span class="num">05</span><span class="txt">Enchant</span></a>
+      <a class="nav-link" href="#doc-06" data-doc="doc-06"><span class="num">06</span><span class="txt">Drops e Craft</span></a>
+      <a class="nav-link" href="#doc-07" data-doc="doc-07"><span class="num">07</span><span class="txt">Configuracoes</span></a>
+      <a class="nav-link" href="#doc-08" data-doc="doc-08"><span class="num">08</span><span class="txt">Codigo-Fonte</span></a>
+      <a class="nav-link" href="#doc-09" data-doc="doc-09"><span class="num">09</span><span class="txt">Client-Side</span></a>
+      <a class="nav-link" href="#doc-10" data-doc="doc-10"><span class="num">10</span><span class="txt">Receitas Praticas</span></a>
+    </nav>
+  </aside>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" title="Menu">&#9776;</button>
+      <div class="crumb"><b id="crumb">Inicio</b></div>
+      <button class="icon-btn" id="themeBtn" title="Tema claro/escuro">&#9788;</button>
+    </div>
+    <article class="content" id="content"></article>
+  </div>
+</div>
+
+<!-- Conteudo bruto dos .md -->
+<script type="text/markdown" id="doc-00">
+# Guia de CustomizaÃ§Ã£o â€” L2J Mobius Interlude
+
+DocumentaÃ§Ã£o minuciosa para customizar o servidor: do macro (estrutura de pastas)
+ao micro (arquivo, classe, mÃ©todo), sempre com exemplos reais do **seu** servidor
+e receitas de ponta a ponta.
+
+> Feito para quem Ã© programador mas nunca mexeu em L2J. Leia na ordem.
+
+## Ordem de leitura
+
+| # | Documento | O que vocÃª aprende |
+|---|---|---|
+| 1 | [01_ARQUITETURA.md](01_ARQUITETURA.md) | Como o servidor Ã© montado, fluxo de boot, onde editar |
+| 2 | [02_ESTRUTURA_PASTAS.md](02_ESTRUTURA_PASTAS.md) | O que cada pasta e arquivo faz (datapack, config, cÃ³digo) |
+| 3 | [03_ITENS.md](03_ITENS.md) | Criar/editar itens (armas, armaduras, materiais) |
+| 4 | [04_NPCS_E_LOJAS.md](04_NPCS_E_LOJAS.md) | NPCs, spawns, lojas (buylist) e trocas/craft (multisell) |
+| 5 | [05_ENCHANT.md](05_ENCHANT.md) | Enchant mÃ¡ximo, chances, blessed scrolls |
+| 6 | [06_DROPS_E_CRAFT.md](06_DROPS_E_CRAFT.md) | Drops de mobs e transformar material em item |
+| 7 | [07_CONFIGS.md](07_CONFIGS.md) | Todos os `.ini` de customizaÃ§Ã£o (rates, custom, etc.) |
+| 8 | [08_CODIGO_FONTE.md](08_CODIGO_FONTE.md) | Mapa do cÃ³digo Java para modders |
+| 9 | [09_CLIENT_SIDE.md](09_CLIENT_SIDE.md) | Editar o client (nomes, Ã­cones, meshes) |
+| 10 | [10_RECEITAS_PRATICAS.md](10_RECEITAS_PRATICAS.md) | 4 casos completos passo a passo |
+
+## A regra de ouro (leia antes de tudo)
+
+O servidor que roda fica em `server/game/`, mas **essa pasta Ã© gerada pelo build
+e Ã© descartÃ¡vel** (estÃ¡ no `.gitignore`). Se vocÃª editar direto nela, **perde tudo
+no prÃ³ximo `ant`**.
+
+> **Sempre edite o datapack FONTE:**
+> `source/L2J_Mobius_CT_0_Interlude/dist/game/data/**`
+> e o cÃ³digo em `source/L2J_Mobius_CT_0_Interlude/java/**`.
+> Depois rode `ant` (ou copie o arquivo pra `server/`) e, no jogo, `//reload`.
+
+Isso estÃ¡ detalhado em [01_ARQUITETURA.md](01_ARQUITETURA.md).
+
+## GlossÃ¡rio / palavras-chave
+
+| Termo | Significado |
+|---|---|
+| **Datapack** | Os dados do jogo em XML/HTML (itens, npcs, lojas, drops). NÃ£o Ã© cÃ³digo. |
+| **Item template** | A definiÃ§Ã£o de um item (`data/stats/items/*.xml`), carregada por `ItemData.java`. |
+| **NPC template** | A definiÃ§Ã£o de um NPC/mob (`data/stats/npcs/*.xml`), carregada por `NpcData.java`. |
+| **Buylist** | Loja onde o NPC **vende** itens por adena (`data/buylists/*.xml`). |
+| **Multisell** | Loja de **troca**: dÃ¡ X itens, recebe Y (serve como "craft") (`data/multisell/*.xml`). |
+| **Droplist** | Bloco `<dropLists>` dentro do NPC: o que o mob larga ao morrer. |
+| **Recipe** | Receita de crafting real via skill de Create Item (`data/RecipeData.xml`). |
+| **Handler** | Pequeno "plugin" que dÃ¡ comportamento a um item/skill/comando (`data/scripts/handlers/**`). |
+| **Parser (`*Data.java`)** | Classe Java que lÃª um XML no boot e cria os objetos em memÃ³ria. |
+| **`//reload`** | Comando GM que recarrega dados sem reiniciar o servidor. |
+| **grade / crystal_type** | Grau do item: NG, D, C, B, A, **S** (o topo no Interlude). |
+
+## IDs importantes (referÃªncia rÃ¡pida)
+
+| Item | ID |
+|---|---|
+| Adena | `57` |
+| Scroll: Enchant Weapon S | `959` |
+| Scroll: Enchant Armor S | `960` |
+| Blessed Enchant Weapon S | `6577` |
+| Blessed Enchant Armor S | `6578` |
+
+> Faixa recomendada para **itens custom**: use IDs altos e livres, ex.: a partir de
+> `30000`/`50000`, para nÃ£o colidir com itens retail (ver [03_ITENS.md](03_ITENS.md)).
+
+</script>
+<script type="text/markdown" id="doc-01">
+# 01 â€” Arquitetura e Fluxo
+
+Antes de mexer em qualquer arquivo, entenda como o servidor Ã© montado e por onde
+os dados fluem. Isso evita 90% dos erros de iniciante (principalmente "editei e
+nÃ£o mudou nada" ou "editei e sumiu no rebuild").
+
+## As trÃªs camadas
+
+Um servidor L2J tem trÃªs coisas diferentes:
+
+| Camada | O que Ã© | Onde fica (fonte) | Linguagem |
+|---|---|---|---|
+| **CÃ³digo** | A lÃ³gica do servidor (regras, rede, IA) | `source/L2J_Mobius_CT_0_Interlude/java/**` | Java |
+| **Datapack** | Os dados do mundo (itens, npcs, lojas, drops, quests) | `source/.../dist/game/data/**` | XML/HTML |
+| **Config** | Ajustes (rates, portas, sistemas custom) | `source/.../dist/game/config/**` | INI/XML |
+
+O **build** (`ant`) junta cÃ³digo + datapack + config num ZIP, que Ã© extraÃ­do em
+`server/`. Ã‰ `server/` que efetivamente roda.
+
+```mermaid
+flowchart LR
+  subgraph fonte [source/ versionado no git]
+    java["java/ (codigo)"]
+    dist["dist/game/data (datapack)"]
+    cfg["dist/game/config (config)"]
+  end
+  java -->|ant| zip[build ZIP]
+  dist -->|ant| zip
+  cfg -->|ant| zip
+  zip -->|Expand-Archive| run["server/game (runtime, gitignored)"]
+  run -->|no boot| parsers["data/xml/*Data.java leem os XML"]
+  parsers --> mem["templates em memoria (model/*)"]
+  client["Client system/*.dat"] -->|mesmos IDs| mem
+```
+
+## A REGRA DE OURO: onde editar
+
+`server/game/` Ã© **descartÃ¡vel**. Ele Ã© recriado pelo build e estÃ¡ no `.gitignore`.
+
+- âŒ **NÃƒO** edite `server/game/data/...` para mudanÃ§as permanentes â€” some no prÃ³ximo `ant`.
+- âœ… **EDITE** `source/L2J_Mobius_CT_0_Interlude/dist/game/data/...` (persiste, vai pro git e pro build).
+
+Fluxo permanente correto:
+
+```
+1. Editar em source/.../dist/game/data/... (ou dist/game/config/...)
+2. ant   (regenera o ZIP e/ou copia)
+3. Reiniciar servidor  (ou //reload no jogo para dados suportados)
+```
+
+> Para **testar rÃ¡pido** sem rebuildar, vocÃª pode editar direto em `server/game/data/`
+> e usar `//reload` â€” mas depois **replique a mudanÃ§a em `source/`** senÃ£o perde.
+
+## Fluxo de boot (como um XML vira comportamento no jogo)
+
+1. O Game Server inicia (`GameServer.java`).
+2. Cada parser em `.../gameserver/data/xml/*Data.java` roda uma vez e **lÃª o XML
+   correspondente** do datapack.
+   - Ex.: `ItemData.java` lÃª `data/stats/items/*.xml`.
+   - Ex.: `NpcData.java` lÃª `data/stats/npcs/*.xml`.
+   - Ex.: `BuyListData.java` lÃª `data/buylists/*.xml`.
+3. Cada linha do XML vira um **objeto template** em memÃ³ria (pacote `model/*`),
+   ex.: `ItemTemplate`, `NpcTemplate`, `BuyListHolder`.
+4. Quando um jogador interage (mata um mob, abre uma loja), o servidor usa esses
+   templates em memÃ³ria â€” **nÃ£o lÃª o XML de novo**.
+
+ConsequÃªncia prÃ¡tica: mudou o XML? Precisa **recarregar** (reiniciar ou `//reload`)
+para o servidor reler e recriar os templates.
+
+## Ciclo de iteraÃ§Ã£o: reload vs rebuild
+
+| VocÃª mudou... | Como aplicar |
+|---|---|
+| XML de datapack (item, npc, loja, drop) | `//reload` no jogo (rÃ¡pido) ou reiniciar |
+| Config `.ini` | Normalmente **reiniciar** o Game Server |
+| CÃ³digo Java (`.java`) | `ant` (recompila) + reiniciar o servidor |
+| Client (`.dat`, Ã­cone) | Reabrir o client (ver [09_CLIENT_SIDE.md](09_CLIENT_SIDE.md)) |
+
+Comando de recarga no jogo (GM nÃ­vel 100):
+
+```
+//reload
+```
+Abre um painel com botÃµes (multisell, buylist, npc, skill, etc.). Detalhes em
+[08_CODIGO_FONTE.md](08_CODIGO_FONTE.md).
+
+## Servidor â†” Client (por que itens novos tÃªm "dois lados")
+
+O servidor conhece um item pelo **ID** (ex.: item 200 = "Sage's Staff"). O client
+tambÃ©m tem uma tabela de itens em `system/itemname-e.dat`, `weapongrp.dat`, etc.,
+indexada pelo **mesmo ID**.
+
+- Se vocÃª criar o item 30000 sÃ³ no servidor, ele funciona, mas no client aparece
+  **sem nome e sem Ã­cone** (ou com um placeholder).
+- Para um item aparecer bonito, o **mesmo ID** precisa existir tambÃ©m no client.
+
+Por isso, criar um item 100% novo (ex.: Vesper, que nÃ£o existe no Interlude) tem
+parte servidor ([03_ITENS.md](03_ITENS.md)) e parte client ([09_CLIENT_SIDE.md](09_CLIENT_SIDE.md)).
+
+## Onde estÃ£o as coisas (atalho)
+
+| Quero mexer em... | Datapack fonte |
+|---|---|
+| Itens | `source/.../dist/game/data/stats/items/` |
+| NPCs / mobs / drops | `source/.../dist/game/data/stats/npcs/` |
+| Lojas (venda) | `source/.../dist/game/data/buylists/` |
+| Trocas / craft | `source/.../dist/game/data/multisell/` |
+| Enchant | `source/.../dist/game/data/EnchantItemData.xml` e `EnchantItemGroups.xml` |
+| Spawns | `source/.../dist/game/data/spawns/` |
+| DiÃ¡logos de NPC | `source/.../dist/game/data/html/` |
+| Rates / custom | `source/.../dist/game/config/` |
+| CÃ³digo | `source/.../java/org/l2jmobius/gameserver/` |
+
+</script>
+<script type="text/markdown" id="doc-02">
+# 02 â€” Estrutura de Pastas
+
+Passeio comentado por cada pasta. Os caminhos abaixo sÃ£o mostrados a partir do
+runtime `server/game/` (o que roda), mas lembre: para editar de forma permanente,
+use o espelho em `source/L2J_Mobius_CT_0_Interlude/dist/game/` (ver
+[01_ARQUITETURA.md](01_ARQUITETURA.md)).
+
+## Raiz do servidor (`server/`)
+
+| Pasta | FunÃ§Ã£o |
+|---|---|
+| `login/` | Login Server (autenticaÃ§Ã£o, lista de servidores) |
+| `game/` | Game Server (o mundo) â€” Ã© aqui que vocÃª customiza |
+| `libs/` | JARs compilados (`GameServer.jar`, `LoginServer.jar`) + dependÃªncias |
+| `db_installer/` | Instalador do schema SQL |
+| `backup/` | Backups automÃ¡ticos do banco |
+
+Quase tudo de customizaÃ§Ã£o estÃ¡ em `server/game/`.
+
+## `server/game/config/` â€” ConfiguraÃ§Ãµes
+
+Arquivos `.ini` e `.xml` de ajuste. Os principais (detalhados em [07_CONFIGS.md](07_CONFIGS.md)):
+
+| Arquivo | Controla |
+|---|---|
+| `Rates.ini` | Multiplicadores de XP/SP/Adena/Drop |
+| `Server.ini` | Porta, `AutoCreateAccounts`, `AcceptNewGameServer` |
+| `Player.ini` | Regras de personagem (inventÃ¡rio, enchant de skill, etc.) |
+| `General.ini` | Diversos (autoloot, opÃ§Ãµes gerais) |
+| `NPC.ini` | Comportamento de NPCs/mobs |
+| `Rates.ini` / `PVP.ini` / `Olympiad.ini` | Rates, PvP, OlimpÃ­ada |
+| `EnchantItemData.xml` | Quais scrolls existem e enchant mÃ¡ximo (fica em `data/`, nÃ£o em config) |
+| `Custom/` | 43 sistemas custom prontos (Premium, SchemeBuffer, Transmog, etc.) |
+| `AccessLevels.xml` / `AdminCommands.xml` | NÃ­veis de GM e permissÃµes de comandos `//` |
+
+## `server/game/data/` â€” O Datapack
+
+O coraÃ§Ã£o da customizaÃ§Ã£o. Estrutura:
+
+```
+data/
+â”œâ”€â”€ stats/            # DefiniÃ§Ãµes numÃ©ricas (o "banco de dados" em XML)
+â”‚   â”œâ”€â”€ items/        # Itens: armas, armaduras, materiais, scrolls (93 arquivos)
+â”‚   â”œâ”€â”€ npcs/         # NPCs e mobs, incluindo DROPS (82 arquivos)
+â”‚   â”œâ”€â”€ skills/       # Skills
+â”‚   â”œâ”€â”€ armorsets/    # BÃ´nus de set de armadura
+â”‚   â”œâ”€â”€ augmentation/ # Augment (life stone)
+â”‚   â”œâ”€â”€ pets/         # Pets
+â”‚   â””â”€â”€ players/      # Templates de classe
+â”œâ”€â”€ buylists/         # Lojas de VENDA (NPC vende por adena) â€” 616 arquivos
+â”œâ”€â”€ multisell/        # Lojas de TROCA / "craft" â€” 95 arquivos
+â”œâ”€â”€ spawns/           # Onde cada NPC nasce no mapa
+â”œâ”€â”€ html/             # Janelas de diÃ¡logo dos NPCs (HTML)
+â”œâ”€â”€ teleporters/      # Destinos dos gatekeepers
+â”œâ”€â”€ instances/        # InstÃ¢ncias (dungeons privadas)
+â”œâ”€â”€ scripts/          # LÃ³gica em "script" (Java compilado junto) â€” ver abaixo
+â”œâ”€â”€ EnchantItemData.xml       # Scrolls de enchant e enchant mÃ¡ximo
+â”œâ”€â”€ EnchantItemGroups.xml     # Chances de enchant por grupo
+â”œâ”€â”€ RecipeData.xml            # Receitas de craft (dwarf)
+â”œâ”€â”€ geodata/          # ColisÃ£o/pathfinding (vazio no MVP)
+â”œâ”€â”€ mapregion/        # RegiÃµes do mapa
+â”œâ”€â”€ zones/            # Zonas (peace, pvp, water, etc.)
+â””â”€â”€ xsd/              # Schemas de validaÃ§Ã£o dos XML (nÃ£o editar)
+```
+
+### `data/stats/` em detalhe
+
+- **`items/`** â€” arquivos nomeados por faixa de ID: `00000-00099.xml`,
+  `00200-00299.xml`, etc. Cada `<item>` Ã© uma arma/armadura/material.
+  Ver [03_ITENS.md](03_ITENS.md).
+- **`npcs/`** â€” tambÃ©m por faixa de ID: `20000-20099.xml` (mobs clÃ¡ssicos),
+  `30000-30999` (NPCs de vila), `25000+` (raid bosses). Cada `<npc>` tem stats,
+  skills, IA e o bloco `<dropLists>`. Ver [04](04_NPCS_E_LOJAS.md) e [06](06_DROPS_E_CRAFT.md).
+
+### `data/scripts/` â€” LÃ³gica do datapack
+
+Scripts Java que sÃ£o compilados junto e dÃ£o comportamento:
+
+| Pasta | ConteÃºdo |
+|---|---|
+| `ai/` | InteligÃªncia de NPCs (bosses, mobs especiais) |
+| `quests/` | Todas as quests |
+| `custom/` | Sistemas/NPCs custom (ex.: `SellBuff`, `Transmog`, `FakePlayers`) |
+| `handlers/` | "Plugins" de comportamento (ver abaixo) |
+| `events/` | Eventos automÃ¡ticos |
+| `village_master/` | NPCs de mudanÃ§a de classe/clÃ£ |
+| `conquerablehalls/` | Clan halls conquistÃ¡veis |
+
+### `data/scripts/handlers/` â€” os "plugins"
+
+| Pasta | O que faz |
+|---|---|
+| `items/` | O que acontece ao **usar** um item (poÃ§Ã£o, scroll de enchant, etc.) |
+| `skill/` | Efeitos/lÃ³gica de skills |
+| `actions/` | AÃ§Ã£o ao clicar em algo (NPC, item no chÃ£o) |
+| `bypass/` | BotÃµes/links dentro das janelas HTML dos NPCs |
+| `chat/` | Canais de chat |
+| `punishments/` | Ban, jail, etc. |
+
+## `server/game/data/html/` â€” DiÃ¡logos
+
+HTML simples que aparece ao falar com um NPC. Ex.: o botÃ£o "Comprar" de um
+mercador chama um `bypass` que abre uma buylist. Ver [04_NPCS_E_LOJAS.md](04_NPCS_E_LOJAS.md).
+
+## CÃ³digo-fonte (`source/.../java/org/l2jmobius/`)
+
+| Pacote | FunÃ§Ã£o |
+|---|---|
+| `gameserver/data/xml/` | **Parsers**: leem os XML do datapack (`ItemData`, `NpcData`, `BuyListData`, `MultisellData`, `EnchantItemData`...) |
+| `gameserver/model/` | **Templates e objetos**: `item/`, `buylist/`, `multisell/`, `actor/` (Player, Npc), `skill/` |
+| `gameserver/handler/` | Registro dos handlers |
+| `gameserver/managers/` | Gerenciadores globais (spawn, olympiad, siege...) |
+| `gameserver/network/` | Protocolo de rede (pacotes clienteâ†”servidor) |
+| `gameserver/ai/` | IA base |
+| `commons/` | Utilidades (banco, threads) |
+
+Detalhes de classes/mÃ©todos em [08_CODIGO_FONTE.md](08_CODIGO_FONTE.md).
+
+## Client (`C:\Users\Pandinha\L2\Interlude-Client\`)
+
+| Pasta | ConteÃºdo |
+|---|---|
+| `system/` | `.dat` (nomes, grupos de item/npc/skill), `L2.exe`, `l2.ini` |
+| `systextures/` / `textures/` | Texturas (`.utx`), inclui Ã­cones |
+| `animations/`, `staticmeshes/` | Modelos 3D (`.ukx`, `.usx`) |
+| `maps/` | Mapas |
+
+Ver [09_CLIENT_SIDE.md](09_CLIENT_SIDE.md).
+
+</script>
+<script type="text/markdown" id="doc-03">
+# 03 â€” Itens
+
+Tudo sobre criar e editar itens: armas, armaduras, materiais, scrolls. Este Ã© o
+tÃ³pico base para lojas custom, drops custom e itens novos (tipo Vesper).
+
+## Onde ficam
+
+| Camada | Caminho |
+|---|---|
+| Datapack (editar aqui) | `source/.../dist/game/data/stats/items/*.xml` |
+| Runtime (gerado) | `server/game/data/stats/items/*.xml` |
+| Parser (cÃ³digo) | `.../gameserver/data/xml/ItemData.java` |
+| Templates (cÃ³digo) | `.../gameserver/model/item/` |
+
+Os arquivos sÃ£o divididos por faixa de ID: `00000-00099.xml`, `00200-00299.xml`, etc.
+O item vai no arquivo cuja faixa contÃ©m o ID dele.
+
+## Anatomia de um item (exemplo real de arma)
+
+De `data/stats/items/00200-00299.xml`:
+
+```xml
+<item id="200" type="Weapon" name="Sage's Staff">
+    <set name="icon" val="icon.weapon_sages_staff_i00" />
+    <set name="default_action" val="EQUIP" />
+    <set name="weapon_type" val="BLUNT" />
+    <set name="bodypart" val="lrhand" />
+    <set name="damage_range" val="0;0;46;120" />
+    <set name="crystal_count" val="1720" />
+    <set name="crystal_type" val="C" />
+    <set name="material" val="WOOD" />
+    <set name="weight" val="1000" />
+    <set name="price" val="4300000" />
+    <set name="soulshots" val="3" />
+    <set name="spiritshots" val="3" />
+    <set name="enchant_enabled" val="true" />
+    <set name="is_magic_weapon" val="true" />
+    <stats>
+        <stat type="pAtk">135</stat>
+        <stat type="mAtk">111</stat>
+        <stat type="critRate">4</stat>
+        <stat type="pAtkSpd">325</stat>
+        <stat type="pAtkRange">40</stat>
+    </stats>
+</item>
+```
+
+### Atributos do `<item>`
+
+| Atributo | Significado |
+|---|---|
+| `id` | ID Ãºnico (servidor E client usam o mesmo) |
+| `type` | `Weapon`, `Armor` ou `EtcItem` (define a classe usada, ver abaixo) |
+| `name` | Nome interno (o nome exibido vem do client, ver [09](09_CLIENT_SIDE.md)) |
+
+### Tags `<set name="..." val="..." />` (as mais usadas)
+
+| `name` | O que faz |
+|---|---|
+| `icon` | Ãcone (referÃªncia a uma textura do client) |
+| `default_action` | O que o duplo-clique faz: `EQUIP`, `SKILL_REDUCE` (poÃ§Ã£o), etc. |
+| `weapon_type` | `SWORD`, `BLUNT`, `BOW`, `DAGGER`, `DUAL`, etc. (sÃ³ arma) |
+| `bodypart` | Onde equipa: `rhand`, `lrhand` (duas mÃ£os), `chest`, `legs`, `head`... |
+| `damage_range` | Alcance/Ã¢ngulo de dano da arma |
+| `crystal_type` | **Grade**: `NONE`, `D`, `C`, `B`, `A`, `S` (topo do Interlude) |
+| `crystal_count` | Quantos crystals ao quebrar (crystallize) |
+| `material` | `STEEL`, `FINE_STEEL`, `WOOD`, `MITHRIL`... (afeta som/aparÃªncia) |
+| `weight` | Peso (afeta carga do inventÃ¡rio) |
+| `price` | PreÃ§o-base (usado por lojas e venda a NPC) |
+| `soulshots` / `spiritshots` | Quantos shots consome por golpe |
+| `enchant_enabled` | Se pode ser enchantado (`true`/`false`) |
+| `is_magic_weapon` | Arma mÃ¡gica (usa spiritshots como principal) |
+
+### `<stats>` (atributos numÃ©ricos)
+
+| `type` | Significado |
+|---|---|
+| `pAtk` / `mAtk` | Ataque fÃ­sico / mÃ¡gico |
+| `pDef` / `mDef` | Defesa (para armaduras) |
+| `critRate` | Chance de crÃ­tico |
+| `pAtkSpd` | Velocidade de ataque |
+| `pAtkRange` | Alcance |
+| `randomDamage` | VariaÃ§Ã£o de dano |
+
+## Os tipos e as classes (cÃ³digo)
+
+O atributo `type` do XML decide qual classe Java representa o item:
+
+| `type` no XML | Classe (`model/item/`) | Uso |
+|---|---|---|
+| `Weapon` | `Weapon.java` | Armas |
+| `Armor` | `Armor.java` | Armaduras, jÃ³ias, escudos |
+| `EtcItem` | `EtcItem.java` | Materiais, scrolls, poÃ§Ãµes, recipes, "quest items" |
+
+Todas herdam de **`ItemTemplate.java`** (a definiÃ§Ã£o imutÃ¡vel). Quando o item
+existe de verdade (no inventÃ¡rio/chÃ£o), ele Ã© uma instÃ¢ncia de
+**`model/item/instance/Item.java`** (guarda dono, quantidade, enchant atual).
+
+Enums Ãºteis em `model/item/type/`:
+- `CrystalType` â€” os graus (NONEâ†’S). Ã‰ o que amarra o item Ã s regras de enchant.
+- `WeaponType`, `ArmorType`, `MaterialType`, `EtcItemType`, `ActionType`.
+
+### Parser: `ItemData.java`
+
+No boot, `ItemData.load()` lÃª todos os `stats/items/*.xml`, cria um `Weapon`/
+`Armor`/`EtcItem` por `<item>` e guarda num mapa por ID. O resto do servidor pega
+o template com `ItemData.getInstance().getTemplate(itemId)`.
+
+## Exemplo de EtcItem (material) â€” o que vocÃª vai usar para custom
+
+Materiais/scrolls sÃ£o `EtcItem`. Formato tÃ­pico:
+
+```xml
+<item id="1864" type="EtcItem" name="Stem">
+    <set name="icon" val="icon.etc_raw_material_stem_i00" />
+    <set name="weight" val="90" />
+    <set name="price" val="24" />
+    <set name="material" val="LIQUID" />
+</item>
+```
+
+Para um **material custom** (ex.: "Fragmento Custom" que dropa de mob e serve de
+ingrediente de craft), basta um `EtcItem` novo com um ID livre. Ver
+[06_DROPS_E_CRAFT.md](06_DROPS_E_CRAFT.md).
+
+## Criando um item custom (passo a passo, lado servidor)
+
+1. **Escolha um ID livre.** Para nÃ£o colidir com retail, use IDs altos, ex.: a
+   partir de `30000`. (IDs retail do Interlude vÃ£o atÃ© ~`22000` em itens comuns.)
+2. **Escolha o arquivo** pela faixa. Como nÃ£o existe `30000-30099.xml` por padrÃ£o,
+   crie um novo arquivo XML nessa pasta (o `ItemData` lÃª todos os `*.xml` da pasta)
+   ou adicione a um arquivo existente. Recomendo criar
+   `source/.../dist/game/data/stats/items/30000-30099-custom.xml`:
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../xsd/items.xsd">
+       <item id="30000" type="Weapon" name="Custom Blade">
+           <set name="icon" val="icon.weapon_long_sword_i00" /> <!-- reusa icone existente -->
+           <set name="default_action" val="EQUIP" />
+           <set name="weapon_type" val="SWORD" />
+           <set name="bodypart" val="rhand" />
+           <set name="damage_range" val="0;0;40;120" />
+           <set name="crystal_type" val="S" />
+           <set name="material" val="STEEL" />
+           <set name="weight" val="1600" />
+           <set name="price" val="10000000" />
+           <set name="enchant_enabled" val="true" />
+           <stats>
+               <stat type="pAtk">300</stat>
+               <stat type="critRate">12</stat>
+               <stat type="pAtkSpd">400</stat>
+               <stat type="pAtkRange">40</stat>
+           </stats>
+       </item>
+   </list>
+   ```
+3. **Build/deploy:** `ant` (ou copie o arquivo pra `server/game/data/stats/items/`).
+4. **Reiniciar** o Game Server (itens nÃ£o tÃªm `//reload` isolado confiÃ¡vel; reinicie).
+5. **Testar:** `//create_item 30000 1`.
+
+> Nesse exemplo reusamos o Ã­cone `icon.weapon_long_sword_i00`, entÃ£o funciona sem
+> mexer no client. O nome "Custom Blade" sÃ³ aparece de verdade se vocÃª adicionar o
+> ID 30000 no `itemname-e.dat` do client â€” senÃ£o aparece o nome interno/placeholder.
+> Ver [09_CLIENT_SIDE.md](09_CLIENT_SIDE.md).
+
+## Caso "Vesper" (item que NÃƒO existe no Interlude)
+
+Vesper Ã© de crÃ´nicas posteriores. No Interlude o topo Ã© **grade S** (Icarus/Dynasty
+nÃ£o existem). VocÃª tem duas rotas:
+
+1. **Vesper "de mentira" (rÃ¡pido):** criar um item custom grade S com stats de
+   Vesper e **reusar visual existente** (Ã­cone e mesh de uma arma S atual, ex.:
+   Draconic Bow / Forgotten Blade). Ã‰ sÃ³ servidor + `itemname-e.dat` no client.
+2. **Vesper "de verdade" (visual novo):** importar Ã­cone, mesh e textura da Vesper
+   para o client e referenciÃ¡-los. Ã‰ a rota completa client-side, detalhada em
+   [09_CLIENT_SIDE.md](09_CLIENT_SIDE.md) e na receita 2 de [10_RECEITAS_PRATICAS.md](10_RECEITAS_PRATICAS.md).
+
+## Erros comuns
+
+| Sintoma | Causa | CorreÃ§Ã£o |
+|---|---|---|
+| Item some depois do `ant` | Editou em `server/` em vez de `source/` | Editar no datapack fonte |
+| Item sem nome/Ã­cone no client | ID nÃ£o existe no client | Adicionar no `itemname-e.dat`/grp (doc 09) |
+| Item nÃ£o aparece com `//create_item` | XML invÃ¡lido / nÃ£o recarregado | Validar XML e reiniciar |
+| Grade errada / nÃ£o enchanta | `crystal_type` incorreto ou `enchant_enabled=false` | Corrigir os `<set>` |
+
+</script>
+<script type="text/markdown" id="doc-04">
+# 04 â€” NPCs, Spawns e Lojas
+
+Como definir um NPC, fazer ele nascer no mapa, dar um diÃ¡logo e transformÃ¡-lo numa
+loja que vende itens (buylist) ou troca itens (multisell / "craft").
+
+## VisÃ£o geral do fluxo de um NPC-mercador
+
+```mermaid
+flowchart LR
+  tmpl["stats/npcs/*.xml (define o NPC)"] --> spawn["spawns/*.xml (faz nascer)"]
+  spawn --> click["Jogador clica no NPC"]
+  click --> html["html/<pasta>/<id>.htm (dialogo)"]
+  html -->|"bypass _Buy 383"| buy["buylists/383.xml (vende)"]
+  html -->|"bypass _multisell 001"| multi["multisell/001.xml (troca/craft)"]
+```
+
+## 1. DefiniÃ§Ã£o do NPC (`data/stats/npcs/*.xml`)
+
+Arquivos por faixa de ID. Exemplo real de mob (de `20000-20099.xml`):
+
+```xml
+<npc id="20001" level="1" type="Monster" name="Gremlin">
+    <race>FAIRY</race>
+    <sex>MALE</sex>
+    <acquire exp="29" sp="2" />
+    <stats str="40" int="21" dex="30" wit="20" con="43" men="10">
+        <vitals hp="39.74" hpRegen="2" mp="40" mpRegen="0.9" />
+        <attack physical="8.47" magical="5.78" critical="4" attackSpeed="253" type="SWORD" range="40" />
+        <defence physical="44.4" magical="29.5" />
+        <speed><walk ground="20" /><run ground="50" /></speed>
+    </stats>
+    <skillList>
+        <skill id="4416" level="13" />
+    </skillList>
+    <ai aggroRange="1000" isAggressive="false" />
+    <collision><radius normal="10" /><height normal="15" /></collision>
+</npc>
+```
+
+### Atributos e blocos principais
+
+| Elemento | FunÃ§Ã£o |
+|---|---|
+| `id` | ID Ãºnico do NPC (mesmo no client, `npcname-e.dat`) |
+| `type` | **Comportamento**: `Monster`, `Merchant`, `Teleporter`, `Warehouse`, `Npc` (parado), `RaidBoss`, `Pet`... |
+| `name` | Nome interno |
+| `<acquire exp sp>` | XP/SP que o mob dÃ¡ ao morrer |
+| `<stats>` | HP/MP, ataque, defesa, velocidade |
+| `<skillList>` | Skills do NPC (inclui skills "passivas" de raÃ§a/tipo) |
+| `<ai>` | Agressividade, alcance de aggro |
+| `<dropLists>` | O que larga ao morrer (ver [06_DROPS_E_CRAFT.md](06_DROPS_E_CRAFT.md)) |
+| `<collision>` | Tamanho fÃ­sico |
+
+> O `type` Ã© o que decide a **classe Java** que controla o NPC. Para uma loja vocÃª
+> vai querer `type="Merchant"`.
+
+## 2. Fazer o NPC nascer (`data/spawns/*.xml`)
+
+Definir o NPC nÃ£o o coloca no mundo â€” Ã© preciso um spawn. Exemplo real
+(`spawns/Aden/AdenNPCs.xml`):
+
+```xml
+<list enabled="true" ...>
+    <spawn name="AdenNPCs">
+        <npc id="30857" x="147456" y="22576" z="-1989" heading="16384" respawnDelay="60" />
+    </spawn>
+</list>
+```
+
+| Atributo | Significado |
+|---|---|
+| `id` | ID do NPC (do `stats/npcs`) |
+| `x` `y` `z` | Coordenadas no mundo |
+| `heading` | DireÃ§Ã£o que ele olha (0â€“65535) |
+| `respawnDelay` | Segundos atÃ© renascer (para mobs) |
+
+> Para pegar coordenadas: entre no jogo como GM e use `//loc` (mostra x/y/z/heading
+> onde vocÃª estÃ¡). Ou spawne rÃ¡pido com `//spawn <npcId>` para testar sem editar XML.
+
+## 3. DiÃ¡logo do NPC (`data/html/`)
+
+Ao clicar num NPC do tipo que abre janela, o servidor procura um HTML. O nome
+padrÃ£o Ã© `data/html/<pasta_do_tipo>/<npcId>.htm` (ou `<npcId>-1.htm` para pÃ¡ginas).
+
+Exemplo real (`html/adventurer_guildsman/31732-1.htm`):
+
+```html
+<html><body><center>Use Life Crystals</center><br>
+<a action="bypass -h npc_%objectId%_multisell 317325002">Craft Adventurer's Box.</a><br>
+<a action="bypass npc_%objectId%_Link adventurer_guildsman/AboutHighLevelGuilds.htm">Ask about higher level crafting</a>
+</body></html>
+```
+
+### Sintaxe dos bypass (os "botÃµes")
+
+| Bypass | Abre |
+|---|---|
+| `npc_%objectId%_Buy <buylistId>` | Uma **loja de venda** (buylist) |
+| `npc_%objectId%_multisell <multisellId>` | Uma **loja de troca/craft** (multisell) |
+| `npc_%objectId%_Link <arquivo.htm>` | Outra pÃ¡gina HTML |
+| `npc_%objectId%_Chat <n>` | A pÃ¡gina `<npcId>-<n>.htm` |
+
+`%objectId%` Ã© substituÃ­do automaticamente pelo ID da instÃ¢ncia do NPC no mundo.
+
+## 4. Loja de VENDA â€” Buylist (`data/buylists/*.xml`)
+
+Vende itens por adena. O **nome do arquivo Ã© o ID da buylist**. Exemplo real
+(`buylists/0000383.xml`):
+
+```xml
+<list ...>
+    <npcs>
+        <npc>31373</npc> <!-- Atan: NPCs que podem abrir esta loja -->
+    </npcs>
+    <item id="1835" price="8" />   <!-- Soulshot: No Grade -->
+    <item id="2509" price="18" />  <!-- Spiritshot: No Grade -->
+    <item id="17"   price="2" />   <!-- Wooden Arrow -->
+</list>
+```
+
+| Elemento | FunÃ§Ã£o |
+|---|---|
+| `<npcs><npc>ID</npc></npcs>` | Quais NPCs tÃªm acesso a esta loja (seguranÃ§a) |
+| `<item id price />` | Item vendido e por quanto de adena |
+| `count` / `restock_delay` | (opcional) estoque limitado que repÃµe com o tempo |
+
+Parser: `data/xml/BuyListData.java` â†’ modelo `model/buylist/`.
+
+> **Vender atÃ© grade S / itens custom:** basta listar os IDs. Ex.: adicionar
+> `<item id="959" price="500000" />` (Enchant Weapon S) ou `<item id="30000" price="10000000" />`
+> (seu item custom).
+
+## 5. Loja de TROCA / "Craft" â€” Multisell (`data/multisell/*.xml`)
+
+Multisell = "dÃª estes itens, receba aqueles". Ã‰ como se faz **craft simples** sem
+skill de dwarf. O nome do arquivo Ã© o ID. Exemplo real (`multisell/001.xml`):
+
+```xml
+<list ...>
+    <item>
+        <ingredient count="2100" id="57" /> <!-- Adena -->
+        <ingredient count="1" id="21" />    <!-- Shirt -->
+        <production count="1" id="22" />     <!-- Leather Shirt -->
+    </item>
+</list>
+```
+
+| Elemento | FunÃ§Ã£o |
+|---|---|
+| `<ingredient count id />` | O que o jogador **paga** (pode ter vÃ¡rios) |
+| `<production count id />` | O que ele **recebe** |
+
+Atributos Ãºteis no `<list ...>`: `maintainEnchantment="true"` (mantÃ©m enchant),
+`applyTaxes`, `isChanceMultisell`.
+
+Parser: `data/xml/MultisellData.java` â†’ modelo `model/multisell/`.
+
+> **"Craft" de material custom em item:** crie um multisell onde os ingredientes sÃ£o
+> seus materiais custom e a produÃ§Ã£o Ã© o item final. Ver [06_DROPS_E_CRAFT.md](06_DROPS_E_CRAFT.md).
+
+## Receita: NPC loja custom que vende atÃ© S / itens custom
+
+1. **Criar o NPC** em `source/.../dist/game/data/stats/npcs/` (arquivo custom, ex.:
+   `50000-50099-custom.xml`):
+   ```xml
+   <npc id="50000" level="70" type="Merchant" name="Custom Shop">
+       <race>HUMAN</race><sex>MALE</sex>
+       <stats str="40" int="21" dex="30" wit="20" con="43" men="10">
+           <vitals hp="3000" mp="1500" />
+           <attack physical="10" magical="10" attackSpeed="253" type="FIST" range="40" />
+           <defence physical="100" magical="100" />
+           <speed><walk ground="50" /><run ground="120" /></speed>
+       </stats>
+       <collision><radius normal="8" /><height normal="23" /></collision>
+   </npc>
+   ```
+2. **Criar a buylist** em `data/buylists/0050000.xml` ligada a esse NPC:
+   ```xml
+   <list ...>
+       <npcs><npc>50000</npc></npcs>
+       <item id="959" price="500000" />   <!-- Enchant Weapon S -->
+       <item id="30000" price="10000000" /> <!-- seu item custom -->
+   </list>
+   ```
+3. **Criar o HTML** `data/html/merchant/50000.htm`:
+   ```html
+   <html><body><center>Loja Custom</center><br>
+   <a action="bypass npc_%objectId%_Buy 50000">Comprar itens</a>
+   </body></html>
+   ```
+4. **Spawnar** o NPC (edite um `spawns/*.xml` ou use `//spawn 50000` para testar).
+5. **Client:** adicione o ID 50000 no `npcname-e.dat`/`npcgrp.dat` para nome/aparÃªncia
+   (senÃ£o fica genÃ©rico). Ver [09_CLIENT_SIDE.md](09_CLIENT_SIDE.md).
+6. **Build + reiniciar**, ou testar em runtime com `//reload` (buylist/multisell/npc).
+
+## Comandos de teste (GM)
+
+```
+//spawn 50000        cria o NPC onde vocÃª estÃ¡
+//loc                mostra coordenadas para o spawn XML
+//reload             painel de reload (npc, buylist, multisell...)
+```
+
+</script>
+<script type="text/markdown" id="doc-05">
+# 05 â€” Sistema de Enchant
+
+Como controlar enchant mÃ¡ximo, chances de sucesso por nÃ­vel, scrolls normais/blessed/
+crystal e como criar seu prÃ³prio esquema (ex.: enchant "fÃ¡cil" atÃ© +25 com blessed
+que nÃ£o quebra o item).
+
+## As peÃ§as do sistema
+
+| PeÃ§a | Arquivo / Classe | Papel |
+|---|---|---|
+| Quais scrolls existem + enchant mÃ¡x | `data/EnchantItemData.xml` | Define cada scroll (id, grade, maxEnchant) |
+| Chances por nÃ­vel de enchant | `data/EnchantItemGroups.xml` | % de sucesso conforme o +atual do item |
+| Limite rÃ­gido de over-enchant | `config/Player.ini` (`DisableOverEnchanting`) | Impede passar do mÃ¡ximo |
+| Abrir a janela ao usar scroll | `handlers/items/EnchantScrolls.java` | SÃ³ dispara a UI de seleÃ§Ã£o |
+| LÃ³gica de sucesso/falha | `network/clientpackets/RequestEnchantItem.java` | **Onde o resultado Ã© decidido** |
+
+## 1. `EnchantItemData.xml` â€” os scrolls e o teto
+
+Cada `<enchant>` Ã© um scroll. Exemplos reais:
+
+```xml
+<!-- Scrolls: Enchant Weapon -->
+<enchant id="959" targetGrade="S" maxEnchant="16" />
+
+<!-- Blessed Scrolls: Enchant Weapon -->
+<enchant id="6577" targetGrade="S" maxEnchant="16" />
+
+<!-- Crystal Scrolls: Enchant Weapon -->
+<enchant id="961" targetGrade="S" bonusRate="100" />
+```
+
+| Atributo | Significado |
+|---|---|
+| `id` | ID do item scroll (tem que existir em `stats/items`) |
+| `targetGrade` | Grade do item que ele pode enchantar (`D`,`C`,`B`,`A`,`S`) |
+| `maxEnchant` | **Enchant mÃ¡ximo** que este scroll alcanÃ§a (retail = 16) |
+| `bonusRate` | BÃ´nus de chance somado (usado nos crystal scrolls) |
+| `scrollGroupId` | Qual grupo de chances usar (default `0`) |
+
+> **Aumentar o enchant mÃ¡ximo:** troque `maxEnchant="16"` para `maxEnchant="25"`
+> nos scrolls que quiser. FaÃ§a isso nos scrolls E ajuste as chances (prÃ³xima seÃ§Ã£o),
+> senÃ£o de +16 pra cima a chance vira 0%.
+
+Os trÃªs "sabores" de scroll (comportamento definido no cÃ³digo, ver seÃ§Ã£o 4):
+- **Normal** (ex.: 959): falhou â†’ **item quebra** (vira crystals).
+- **Blessed** (ex.: 6577): falhou â†’ **item preservado**, enchant volta a **+0**.
+- **Crystal** (ex.: 961): falhou â†’ **item preservado**, enchant **mantÃ©m** o valor.
+
+## 2. `EnchantItemGroups.xml` â€” as chances por nÃ­vel
+
+Duas partes:
+
+### a) Grupos de taxa (`<enchantRateGroup>`)
+
+Definem a % de sucesso conforme o enchant **atual** do item:
+
+```xml
+<enchantRateGroup name="FIGHTER_WEAPON_GROUP">
+    <current enchant="0-2" chance="100" />
+    <current enchant="3-15" chance="66" />
+    <current enchant="16-65535" chance="0" />
+</enchantRateGroup>
+```
+
+Leitura: de +0 a +2 = 100% (enchant "seguro"), de +3 a +15 = 66%, de +16 pra cima = 0%.
+
+### b) AmarraÃ§Ã£o grupoâ†’slot (`<enchantScrollGroup id="0">`)
+
+Diz qual grupo se aplica a qual tipo de item:
+
+```xml
+<enchantScrollGroup id="0">
+    <enchantRate group="ARMOR_GROUP"> ... slots de armadura ... </enchantRate>
+    <enchantRate group="FIGHTER_WEAPON_GROUP">
+        <item slot="rhand"  magicWeapon="false" />
+        <item slot="lrhand" magicWeapon="false" />
+    </enchantRate>
+    <enchantRate group="MAGE_WEAPON_GROUP">
+        <item slot="rhand"  magicWeapon="true" />
+        <item slot="lrhand" magicWeapon="true" />
+    </enchantRate>
+</enchantScrollGroup>
+```
+
+Grupos existentes: `ARMOR_GROUP`, `FULL_ARMOR_GROUP`, `FIGHTER_WEAPON_GROUP`,
+`MAGE_WEAPON_GROUP`.
+
+> **Enchant seguro (safe enchant):** Ã© a faixa `chance="100"`. No retail vai atÃ© +2/+3.
+> Para dar "safe +4", mude `enchant="0-2"` para `enchant="0-4"`.
+
+## 3. `Player.ini` â€” o teto rÃ­gido
+
+```ini
+# Impede enchantar acima do maxEnchant (sÃ³ manda aviso).
+DisableOverEnchanting = True
+# Itens que nunca podem ser enchantados.
+EnchantBlackList = 7816,7817,...
+```
+
+Se `DisableOverEnchanting = True`, o `maxEnchant` do `EnchantItemData.xml` Ã© um teto
+duro. Se `False`, o jogo tenta enchantar alÃ©m (com a chance do grupo, que costuma
+ser 0% acima do range â†’ sempre falha). Mantenha `True` e controle pelo `maxEnchant`
++ chances.
+
+## 4. Onde o resultado Ã© decidido (cÃ³digo)
+
+- `handlers/items/EnchantScrolls.java` â†’ mÃ©todo `onItemUse`: sÃ³ valida condiÃ§Ãµes
+  (nÃ£o montado, nÃ£o castando) e abre a janela `ChooseInventoryItem`. **NÃ£o decide
+  sucesso.**
+- `network/clientpackets/RequestEnchantItem.java`: recebe qual item o jogador
+  escolheu, calcula a chance (via `EnchantItemGroupsData`), sorteia sucesso/falha e
+  aplica o resultado (incrementa enchant, quebra o item, ou reseta pra +0).
+
+Quer mudar **comportamento** (ex.: blessed que nÃ£o reseta pra 0, mas mantÃ©m o +)?
+Ã‰ aqui em `RequestEnchantItem.java` que vocÃª mexe â€” depois `ant` + reiniciar.
+Ver [08_CODIGO_FONTE.md](08_CODIGO_FONTE.md).
+
+## Receita A â€” Enchant mÃ¡ximo +25 com chances customizadas
+
+1. `EnchantItemData.xml`: nos scrolls desejados, `maxEnchant="25"`.
+2. `EnchantItemGroups.xml`: estenda as faixas de chance, ex.:
+   ```xml
+   <enchantRateGroup name="FIGHTER_WEAPON_GROUP">
+       <current enchant="0-4" chance="100" /> <!-- safe ate +4 -->
+       <current enchant="5-15" chance="66" />
+       <current enchant="16-20" chance="40" />
+       <current enchant="21-25" chance="20" />
+       <current enchant="26-65535" chance="0" />
+   </enchantRateGroup>
+   ```
+3. `Player.ini`: mantenha `DisableOverEnchanting = True`.
+4. `//reload` (enchant data) ou reiniciar. Teste com `//enchant` ou scrolls no jogo.
+
+## Receita B â€” Blessed scroll custom que facilita enchant
+
+Rota **sÃ³ datapack** (sem tocar cÃ³digo):
+1. Crie/reuse um scroll blessed em `EnchantItemData.xml` com `maxEnchant` alto e
+   aponte pra um `scrollGroupId` de um grupo com chances generosas.
+2. Crie um `<enchantRateGroup>` novo (ex.: `BLESSED_EASY`) com chances altas e um
+   `<enchantScrollGroup id="1">` amarrando aos slots â€” e ponha `scrollGroupId="1"`
+   no scroll blessed. Assim sÃ³ o blessed usa as chances fÃ¡ceis.
+
+Rota **cÃ³digo** (comportamento diferente do retail, ex.: blessed nunca reseta): editar
+`RequestEnchantItem.java`. Ver [10_RECEITAS_PRATICAS.md](10_RECEITAS_PRATICAS.md), receita 3.
+
+## Cuidados
+
+| Erro | Efeito |
+|---|---|
+| Aumentar `maxEnchant` sem estender as chances | Trava em 0% acima de +16 |
+| `DisableOverEnchanting=False` achando que "libera" | Continua 0% acima do range â†’ sÃ³ falha |
+| Editar em `server/` e nÃ£o em `source/` | Perde no `ant` |
+| Esquecer `//reload`/reiniciar | MudanÃ§a nÃ£o aplica |
+
+</script>
+<script type="text/markdown" id="doc-06">
+# 06 â€” Drops e Craft
+
+Como fazer mobs largarem itens (inclusive materiais custom) e como transformar esses
+materiais em itens finais â€” por multisell ("troca") ou por recipe de verdade (dwarf).
+
+## Parte 1 â€” Drops de mobs
+
+Os drops ficam **dentro do prÃ³prio NPC**, no bloco `<dropLists>`
+(`data/stats/npcs/*.xml`). Exemplo real (Gremlin, `20000-20099.xml`):
+
+```xml
+<dropLists>
+    <drop>
+        <group chance="70">
+            <item id="57" min="30" max="42" chance="100" /> <!-- Adena -->
+        </group>
+        <group chance="25.7011">
+            <item id="112" min="1" max="1" chance="30.9858" /> <!-- Apprentice's Earring -->
+            <item id="116" min="1" max="1" chance="46.0093" /> <!-- Magic Ring -->
+            <item id="118" min="1" max="1" chance="23.0049" /> <!-- Necklace of Magic -->
+        </group>
+        <group chance="6.6992">
+            <item id="1864" min="1" max="1" chance="29.1259" /> <!-- Stem -->
+            <item id="1788" min="1" max="1" chance="11.6506" /> <!-- Recipe: Bow -->
+        </group>
+    </drop>
+</dropLists>
+```
+
+### Como ler isso (importante!)
+
+O drop Ã© em **dois estÃ¡gios**:
+
+1. **`<group chance="X">`** â€” primeiro sorteia se o grupo "cai" (X%).
+2. **`<item ... chance="Y">`** â€” se o grupo caiu, sorteia **qual** item dele sai
+   (as chances dos itens dentro do grupo somam ~100%; Ã© uma escolha ponderada).
+
+EntÃ£o no exemplo: 25.70% de chance de cair uma jÃ³ia; se cair, Ã© Magic Ring 46%,
+Earring 31%, ou Necklace 23%.
+
+| Atributo | Significado |
+|---|---|
+| `<group chance>` | Probabilidade do grupo ativar (%) |
+| `<item id>` | Item que pode sair |
+| `min` / `max` | Quantidade (sorteada entre min e max) |
+| `<item chance>` | Peso do item **dentro** do grupo (%) |
+
+> **Spoil** usa um bloco `<spoil>` no mesmo formato (drop por skill Spoil do dwarf).
+
+### Adicionar um drop a um mob
+
+Edite o `<dropLists>` do mob no datapack fonte. Ex.: fazer o Gremlin dropar seu
+material custom (id 30500) a 15%:
+
+```xml
+<group chance="15">
+    <item id="30500" min="1" max="2" chance="100" /> <!-- Fragmento Custom -->
+</group>
+```
+
+Depois: `ant` (ou copiar) â†’ `//reload` (npc) ou reiniciar.
+
+> Para um item **sempre** dropar (ex.: evento), use `<group chance="100">` com um
+> Ãºnico `<item ... chance="100" />`.
+
+## Parte 2 â€” Rates de drop (`config/Rates.ini`)
+
+Os multiplicadores globais afetam TODOS os drops sem editar cada mob:
+
+```ini
+# Chance (probabilidade de cair)
+DeathDropChanceMultiplier = 1
+SpoilDropChanceMultiplier = 1
+# Amount (quantidade quando cai)
+DeathDropAmountMultiplier = 1
+SpoilDropAmountMultiplier = 1
+# Adena (via lista por item id; 57 = adena)
+DropAmountMultiplierByItemId = 57,1;...
+```
+
+| Config | Efeito |
+|---|---|
+| `DeathDropChanceMultiplier` | Multiplica a **chance** de drop ao matar |
+| `DeathDropAmountMultiplier` | Multiplica a **quantidade** dropada |
+| `RateDropManor`, `Herb...`, `Raid...` | Variantes (manor, ervas, raid) |
+| `DropAmountMultiplierByItemId` | Rate especÃ­fico por item (formato `id,mult;...`) |
+
+> âš ï¸ Chance Ã— Amount se multiplicam. Chance 5 + Amount 5 = **25x**. Cuidado.
+
+## Parte 3 â€” Autoloot (`config/Player.ini`)
+
+```ini
+AutoLoot = False        # itens caem no chÃ£o (True = vÃ£o direto pro inventario)
+AutoLootHerbs = False   # ervas
+AutoLootRaids = False   # drops de raid
+AutoLootItemIds = 0     # itens que NUNCA sao autoloot (lista de ids)
+```
+
+Servidores custom geralmente ligam `AutoLoot = True` para conforto.
+
+## Parte 4 â€” Transformar material em item
+
+VocÃª tem duas formas de "craftar". Escolha conforme o objetivo.
+
+### OpÃ§Ã£o A â€” Multisell (troca instantÃ¢nea, sem skill)
+
+Melhor para lojas de troca (ex.: "10 Fragmentos Custom â†’ 1 Custom Blade"). JÃ¡
+coberto em [04_NPCS_E_LOJAS.md](04_NPCS_E_LOJAS.md). Formato:
+
+```xml
+<item>
+    <ingredient count="10" id="30500" /> <!-- Fragmento Custom -->
+    <ingredient count="1000000" id="57" /> <!-- + adena -->
+    <production count="1" id="30000" /> <!-- Custom Blade -->
+</item>
+```
+
+Vantagens: simples, 100% datapack, sem precisar de dwarf/recipe book. Ã‰ a forma
+mais usada em servidores custom.
+
+### OpÃ§Ã£o B â€” Recipe de verdade (dwarven craft, com skill e chance)
+
+Craft "clÃ¡ssico": o dwarf aprende uma **recipe book** e craft com chance de sucesso.
+Definido em `data/Recipes.xml`. Exemplo real:
+
+```xml
+<item id="4" recipeId="1788" name="mk_bow" craftLevel="1" type="dwarven" successRate="100">
+    <ingredient id="1864" count="4" />
+    <ingredient id="1869" count="2" />
+    <production id="17" count="500" />
+    <statUse name="MP" value="30" />
+</item>
+```
+
+| Atributo | Significado |
+|---|---|
+| `id` | ID interno da recipe (Ãºnico na lista) |
+| `recipeId` | **ID do item "receita"** (a recipe book que o dwarf usa) |
+| `name` | Nome interno |
+| `craftLevel` | NÃ­vel de Create Item exigido |
+| `type` | `dwarven` ou `common` |
+| `successRate` | Chance de sucesso (%) |
+| `<ingredient>` | Materiais consumidos |
+| `<production>` | Item produzido |
+| `<statUse>` | MP gasto por tentativa |
+
+Parser: `data/xml/RecipeData.java`. O jogador precisa:
+1. Ter o **item recipe** (o `recipeId`) â€” que vocÃª dÃ¡ por drop/loja.
+2. "Registrar" a recipe (duplo-clique) para aprendÃª-la.
+3. Craftar via skill Create Item.
+
+> Para uma recipe custom: crie o **item recipe book** (um `EtcItem` em stats/items),
+> use o ID dele como `recipeId`, e defina ingredientes/produÃ§Ã£o. Distribua o book por
+> drop ([Parte 1](#parte-1--drops-de-mobs)) ou loja.
+
+### Quando usar qual
+
+| Objetivo | Use |
+|---|---|
+| Loja de troca rÃ¡pida, qualquer classe | **Multisell** |
+| Craft com chance, exclusivo de dwarf, "economia" | **Recipe** |
+
+## Receita completa â€” Material custom que vira arma
+
+1. **Item material** (`stats/items`, EtcItem id 30500 "Fragmento Custom").
+2. **Item final** (`stats/items`, Weapon id 30000 "Custom Blade") â€” ver [03](03_ITENS.md).
+3. **Drop:** adicione o 30500 no `<dropLists>` de um mob (Parte 1).
+4. **Craft:** multisell `10x 30500 â†’ 1x 30000` (OpÃ§Ã£o A) OU recipe (OpÃ§Ã£o B).
+5. **Loja/NPC** que abre o multisell â€” ver [04](04_NPCS_E_LOJAS.md).
+6. `ant` â†’ `//reload` ou reiniciar. Teste: mate o mob, junte 10, troque.
+
+Passo a passo detalhado na receita 4 de [10_RECEITAS_PRATICAS.md](10_RECEITAS_PRATICAS.md).
+
+</script>
+<script type="text/markdown" id="doc-07">
+# 07 â€” ConfiguraÃ§Ãµes (`config/`)
+
+ReferÃªncia dos arquivos de configuraÃ§Ã£o do Game Server. Editar `.ini` Ã© a forma
+mais rÃ¡pida de customizar (rates, sistemas prontos) **sem tocar em cÃ³digo**.
+
+> Edite no fonte `source/.../dist/game/config/**`. Quase toda mudanÃ§a de `.ini`
+> exige **reiniciar** o Game Server (nÃ£o hÃ¡ `//reload` para a maioria das configs).
+
+## Configs principais (`config/*.ini`)
+
+| Arquivo | Controla | Chaves que vocÃª mais vai mexer |
+|---|---|---|
+| `Rates.ini` | Multiplicadores de progressÃ£o/drop | `RateXp`, `RateSp`, `RateDropManor`, `DeathDropChanceMultiplier`, `DeathDropAmountMultiplier` |
+| `Server.ini` | Rede/servidor, criaÃ§Ã£o de conta | `GameserverPort`, `AutoCreateAccounts`, `MaximumOnlineUsers` |
+| `Player.ini` | Regras de personagem | `AutoLoot`, `EnchantBlackList`, `DisableOverEnchanting`, `MaximumSlotsForNoDwarf`, `StoreSkillCooltime` |
+| `General.ini` | Diversos globais | opÃ§Ãµes de mundo, drops no chÃ£o, GM |
+| `NPC.ini` | Comportamento de NPC/mob | aggro, spawn, view, buffs de mob |
+| `PVP.ini` | Regras de PvP/PK | tempo de flag, karma, drop em PK |
+| `Olympiad.ini` | OlimpÃ­ada | perÃ­odo, pontos, recompensas |
+| `Siege.ini` / `ConquerableHallSiege.ini` | Cercos | horÃ¡rios, regras |
+| `GrandBoss.ini` | Grand bosses | respawn de Antharas/Baium/etc. |
+| `Feature.ini` | Recursos de clÃ£/fortaleza | manor, clan hall, fortaleza |
+| `FloodProtector.ini` | Anti-flood | limites de aÃ§Ãµes por segundo |
+| `GeoEngine.ini` | Geodata | pathfinding, line of sight |
+| `Network.ini` | Rede baixa | buffers, timeouts |
+| `Threads.ini` | Pools de threads | performance |
+| `IdManager.ini` | GestÃ£o de IDs de objeto | avanÃ§ado |
+| `Development.ini` | Debug/dev | logs, debug de pacotes |
+| `Interface.ini` | GUI do servidor | `EnableGUI` (vocÃª usa `False`, headless) |
+| `Database.ini` | ConexÃ£o MariaDB | `URL`, `Login`, `Password` |
+
+## Configs em XML (`config/*.xml`)
+
+| Arquivo | FunÃ§Ã£o |
+|---|---|
+| `AccessLevels.xml` | Define os nÃ­veis de GM (o `accesslevel` do personagem no banco). O 100 = admin full |
+| `AdminCommands.xml` | Qual `accesslevel` pode usar cada comando `//` |
+| `ClassMaster.xml` | Regras do NPC de mudanÃ§a de classe (Ãºtil para servidor "auto-class") |
+| `DynamicExpRates.xml` | XP variÃ¡vel por faixa de nÃ­vel |
+| `ipconfig.xml` | IP que o servidor anuncia (vocÃª usa `127.0.0.1` local) |
+| `Scripts.xml` | Quais scripts/handlers sÃ£o carregados |
+| `SiegeSchedule.xml` | Agenda de cercos |
+
+> `AccessLevels.xml` + `AdminCommands.xml` sÃ£o o que fazem o `//admin` funcionar.
+> Ver `docs/COMANDOS_BANCO.md` para o lado do banco (`characters.accesslevel`).
+
+## `config/Custom/` â€” Sistemas prontos (sÃ³ ligar/ajustar)
+
+O Mobius jÃ¡ traz 43 sistemas custom. Cada `.ini` costuma ter um `Enable...=True/False`
+no topo. Os mais Ãºteis para o seu tipo de servidor:
+
+| Arquivo | O que habilita |
+|---|---|
+| `PremiumSystem.ini` | Conta premium com rates prÃ³prios de XP/drop/adena |
+| `SchemeBuffer.ini` | NPC buffer com esquemas salvos (buff em 1 clique) |
+| `SellBuffs.ini` | Jogadores vendem buffs a outros |
+| `AutoPlay.ini` | Auto-farm/auto-caÃ§a (bot oficial estilo "macro") |
+| `AutoPotions.ini` | Uso automÃ¡tico de poÃ§Ãµes HP/MP |
+| `Transmog.ini` | AparÃªncia de um item sobre outro (skin) |
+| `ChampionMonsters.ini` | Mobs "campeÃµes" com mais HP/drop |
+| `CommunityBoard.ini` | Painel Alt+B (loja, buffer, teleport na UI) |
+| `OfflineTrade.ini` | Loja offline (personagem fica vendendo deslogado) |
+| `OfflinePlay.ini` | Continuar farmando offline |
+| `FactionSystem.ini` | Duas facÃ§Ãµes em guerra |
+| `PvpRewardItem.ini` | Item por PvP kill |
+| `PvpTitleColor.ini` / `PvpAnnounce.ini` | Cor de tÃ­tulo/anÃºncio por PvP |
+| `ClassBalance.ini` | Ajuste fino de dano por classe |
+| `NpcStatMultipliers.ini` | Multiplica HP/dano de mobs globalmente |
+| `RandomSpawns.ini` | Varia posiÃ§Ã£o de spawn dos mobs |
+| `StartingLocation.ini` | Onde novos personagens nascem |
+| `StartingTitle.ini` | TÃ­tulo inicial |
+| `Wedding.ini` | Sistema de casamento |
+| `Banking.ini` | Troca adenaâ†”goldbar por comando |
+| `Captcha.ini` / `WalkerBotProtection.ini` | Anti-bot |
+| `DualboxCheck.ini` | Limita janelas por IP |
+| `ScreenWelcomeMessage.ini` | Mensagem de boas-vindas na tela |
+| `FakePlayers.ini` | "Jogadores" fake para dar movimento ao servidor |
+| `MultilingualSupport.ini` | Suporte a mÃºltiplos idiomas de client |
+| `FreeMounts.ini`, `NoblessMaster.ini`, `DelevelManager.ini`, `WarehouseSorting.ini`, `PrivateStoreRange.ini`, `MerchantZeroSellPrice.ini`, `AllowedPlayerRaces.ini`, `CancelReturn.ini`, `FindPvP.ini`, `OnlineInfo.ini`, `ServerTime.ini`, `PasswordChange.ini`, `ChatModeration.ini`, `CustomMailManager.ini`, `BossAnnouncements.ini` | ConveniÃªncias diversas â€” abra o `.ini` para ver as chaves |
+
+### Como ativar um sistema custom
+
+1. Abra o `.ini` em `source/.../dist/game/config/Custom/`.
+2. Mude `Enable...=False` para `True` e ajuste as chaves.
+3. Confirme que ele Ã© carregado (a maioria jÃ¡ vem no `Scripts.xml`/config loader).
+4. `ant` (ou copiar) â†’ **reiniciar** o Game Server.
+
+## Dica: comparar com o default
+
+Ao editar, mantenha um backup do `.ini` original ou compare com o mesmo arquivo em
+`source/.../dist/game/config/` (versionado). Assim vocÃª sempre sabe o que mudou.
+
+## RelaÃ§Ã£o com os outros docs
+
+- Rates de XP/drop â†’ tambÃ©m em [06_DROPS_E_CRAFT.md](06_DROPS_E_CRAFT.md).
+- Enchant (`Player.ini`) â†’ [05_ENCHANT.md](05_ENCHANT.md).
+- GM/`AccessLevels.xml` â†’ `docs/COMANDOS_BANCO.md`.
+
+</script>
+<script type="text/markdown" id="doc-08">
+# 08 â€” CÃ³digo-Fonte para Modders
+
+Quando o datapack nÃ£o basta (vocÃª quer mudar **comportamento**, nÃ£o sÃ³ dados), Ã©
+hora de mexer no Java. Este doc Ã© o mapa: onde estÃ¡ cada coisa, o padrÃ£o que se
+repete (parser â†’ template â†’ uso), e o loop de build/deploy.
+
+Raiz: `source/L2J_Mobius_CT_0_Interlude/java/org/l2jmobius/`
+
+## Mapa de pacotes (`gameserver/`)
+
+| Pacote | FunÃ§Ã£o |
+|---|---|
+| `data/xml/` | **Parsers** `*Data.java` â€” leem os XML do datapack no boot |
+| `model/` | **Objetos do jogo**: `item/`, `actor/` (Player, Npc, Monster), `buylist/`, `multisell/`, `skill/`, `holders/` |
+| `network/clientpackets/` | Pacotes **recebidos** do client (aÃ§Ãµes do jogador) |
+| `network/serverpackets/` | Pacotes **enviados** ao client (respostas/atualizaÃ§Ãµes) |
+| `handler/` | Interfaces e registros de handlers (`IItemHandler`, `ItemHandler`...) |
+| `managers/` | Gerenciadores globais (spawn, olympiad, siege, castle...) |
+| `ai/` | IA base dos NPCs |
+| `taskmanagers/` | Tarefas periÃ³dicas (regen, decay, autosave) |
+| `cache/`, `geoengine/`, `scripting/`, `util/`, `communitybbs/` | Infra e utilidades |
+
+Fora de `gameserver/`: `commons/` (banco de dados, threads, util) e `loginserver/`.
+
+## O padrÃ£o que se repete: Parser â†’ Template â†’ Uso
+
+Quase todo dado segue este trio. Entender um Ã© entender todos:
+
+```mermaid
+flowchart LR
+  xml["data/.../algo.xml"] --> parser["data/xml/AlgoData.java (le no boot)"]
+  parser --> tmpl["model/.../AlgoTemplate (objeto em memoria)"]
+  tmpl --> uso["managers / network / ai (usam o template)"]
+```
+
+Exemplo concreto (itens):
+
+| Papel | Classe |
+|---|---|
+| XML | `data/stats/items/*.xml` |
+| Parser | `data/xml/ItemData.java` (`load()`, `getTemplate(id)`) |
+| Template | `model/item/ItemTemplate.java` + `Weapon`/`Armor`/`EtcItem` |
+| InstÃ¢ncia no mundo | `model/item/instance/Item.java` |
+
+### Os parsers principais (`data/xml/`, 43 no total)
+
+| Parser | LÃª | Cria |
+|---|---|---|
+| `ItemData` | `stats/items/*.xml` | `ItemTemplate` |
+| `NpcData` | `stats/npcs/*.xml` | `NpcTemplate` |
+| `SkillData` | `stats/skills/*.xml` | `Skill` |
+| `BuyListData` | `buylists/*.xml` | `BuyListHolder` |
+| `MultisellData` | `multisell/*.xml` | `MultisellListHolder` |
+| `EnchantItemData` | `EnchantItemData.xml` | scrolls |
+| `EnchantItemGroupsData` | `EnchantItemGroups.xml` | grupos de chance |
+| `RecipeData` | `Recipes.xml` | receitas |
+| `ArmorSetData`, `DoorData`, `HennaData`, `ExperienceData`, `PlayerTemplateData`... | vÃ¡rios | vÃ¡rios |
+
+> **PadrÃ£o de uso:** `ItemData.getInstance().getTemplate(id)`. Todo parser Ã© um
+> singleton com `getInstance()`.
+
+## Handlers â€” os "plugins" (`data/scripts/handlers/`)
+
+Handlers dÃ£o comportamento sem mexer no core. Ficam no **datapack** (sÃ£o scripts
+compilados junto). Tipos (interfaces em `gameserver/handler/`):
+
+| Interface | Handler faz | Exemplo |
+|---|---|---|
+| `IItemHandler` | Ao **usar** um item | `EnchantScrolls`, poÃ§Ãµes |
+| `IAdminCommandHandler` | Comando `//xxx` | `//spawn`, `//reload` |
+| `IVoicedCommandHandler` | Comando `.xxx` no chat | `.menu`, `.online` |
+| `IUserCommandHandler` | Comando de tecla | `/loc`, `/time` |
+| `IBypassHandler` | BotÃµes nos HTML dos NPCs | `_Buy`, `_multisell` |
+| `IActionClickHandler` | Clique num alvo | clicar em NPC/item |
+| `ITargetTypeHandler` | Tipos de alvo de skill | AoE, single |
+| `IChatHandler` | Canais de chat | shout, trade |
+
+### Registro central: `MasterHandler.java`
+
+Todos os handlers sÃ£o registrados em
+`data/scripts/handlers/MasterHandler.java`. Para **adicionar** um handler novo:
+
+1. Crie a classe (ex.: `handlers/items/MeuScroll.java` implementando `IItemHandler`).
+2. Registre em `MasterHandler.java` na lista do tipo certo.
+3. `ant` + reiniciar.
+
+Exemplo real do handler que abre a janela de enchant
+(`handlers/items/EnchantScrolls.java`):
+
+```java
+public class EnchantScrolls implements IItemHandler
+{
+    @Override
+    public boolean onItemUse(Playable playable, Item item, boolean forceUse)
+    {
+        // valida condicoes e abre ChooseInventoryItem
+        player.setActiveEnchantItemId(item.getObjectId());
+        player.sendPacket(new ChooseInventoryItem(item.getId()));
+        return true;
+    }
+}
+```
+
+> O `onItemUse` sÃ³ abre a UI. A **decisÃ£o** de sucesso/falha do enchant fica no
+> pacote, nÃ£o no handler â€” ver abaixo.
+
+## Pacotes de rede (onde as aÃ§Ãµes "acontecem de verdade")
+
+- `network/clientpackets/RequestEnchantItem.java` â€” recebe o item escolhido, calcula
+  a chance e aplica sucesso/falha/quebra. **Ã‰ aqui que se muda o comportamento do
+  enchant** (ex.: blessed nunca resetar).
+- `network/clientpackets/RequestBuyItem.java` / `RequestSellItem.java` â€” compra/venda.
+- `network/clientpackets/RequestMagicSkillUse.java` â€” uso de skill.
+- `network/serverpackets/*` â€” o que Ã© mandado de volta (ex.: `InventoryUpdate`).
+
+PadrÃ£o: pacote do client â†’ validaÃ§Ã£o â†’ altera `model/actor/Player` â†’ envia
+serverpacket de atualizaÃ§Ã£o.
+
+## Onde mudar coisas comuns
+
+| Quero mudar... | VÃ¡ em |
+|---|---|
+| Regras de enchant (falha, blessed) | `network/clientpackets/RequestEnchantItem.java` |
+| Efeito ao usar um item | `handlers/items/` + `MasterHandler` |
+| Novo comando `//` de GM | `handlers/admincommandhandlers/` + `MasterHandler` |
+| Novo comando `.` de jogador | `handlers/voicedcommandhandlers/` + `MasterHandler` |
+| Como um mob age | `data/scripts/ai/` |
+| FÃ³rmula de dano/stats | `model/actor/` + `model/stats/` |
+| Novo tipo de item | `model/item/` + `ItemData` |
+
+## Loop de build/deploy (Ant)
+
+O build estÃ¡ em `source/L2J_Mobius_CT_0_Interlude/build.xml`.
+
+```powershell
+cd C:\Users\Pandinha\codes\l2ServerTest\source\L2J_Mobius_CT_0_Interlude
+ant                 # compila java + empacota datapack/config num ZIP em dist/
+```
+
+Depois Ã© preciso levar o resultado para `server/`:
+- Se vocÃª usa o ZIP: extraia por cima de `server/` (mantendo suas configs locais).
+- Se mudou **sÃ³ datapack/config** (sem Java): pode copiar os arquivos alterados
+  direto para `server/game/...` (mais rÃ¡pido que rebuildar tudo).
+
+Fluxo prÃ¡tico por tipo de mudanÃ§a:
+
+| Mudou | Comando | Aplicar |
+|---|---|---|
+| SÃ³ XML/HTML de datapack | copiar p/ `server/game/data/` | `//reload` no jogo |
+| SÃ³ `.ini` | copiar p/ `server/game/config/` | reiniciar Game Server |
+| Java (core ou handler) | `ant` | reiniciar Game Server |
+
+> âš ï¸ Nunca edite apenas em `server/` para mudanÃ§as permanentes â€” a fonte de verdade
+> Ã© `source/.../dist/game/**` e `source/.../java/**`. Ver [01_ARQUITETURA.md](01_ARQUITETURA.md).
+
+## O painel `//reload`
+
+O comando GM `//reload` (`handlers/admincommandhandlers/AdminReload.java`) recarrega
+dados sem reiniciar. Suporta, entre outros: `npc`, `buylist`, `multisell`, `skill`,
+`htm`, `zone`, `door`, `teleport`, `quest`. Nem tudo Ã© recarregÃ¡vel (configs `.ini`
+e mudanÃ§as de Java **sempre** exigem reinÃ­cio).
+
+</script>
+<script type="text/markdown" id="doc-09">
+# 09 â€” Client-Side
+
+O servidor conhece itens/NPCs por **ID**. O client precisa do **mesmo ID** para
+mostrar nome, Ã­cone e modelo 3D. Este doc cobre o que editar no client para que
+suas customizaÃ§Ãµes apareÃ§am bonitas.
+
+Client: `C:\Users\Pandinha\L2\Interlude-Client\`
+Protocolo: **746** (Interlude / CT2.0).
+
+## Por que "dois lados"
+
+```mermaid
+flowchart LR
+  srv["Servidor: item 30000 (stats, regras)"] -->|"por ID 30000"| cli
+  cli["Client: itemname-e.dat + weapongrp.dat + textura"] --> tela["Nome, icone e modelo na tela"]
+```
+
+Se o ID existe sÃ³ no servidor: o item **funciona** (equipa, dÃ¡ stats), mas aparece
+sem nome/Ã­cone corretos. Para ficar completo, o mesmo ID tem que existir nos `.dat`
+do client.
+
+## Os arquivos `.dat` do client (`system/`)
+
+| Arquivo | ContÃ©m | Serve para |
+|---|---|---|
+| `itemname-e.dat` | **Nomes e descriÃ§Ãµes** de itens | Nome que aparece no inventÃ¡rio/tooltip |
+| `weapongrp.dat` | Dados de **armas** (mesh, textura, Ã­cone, som) | AparÃªncia de armas |
+| `armorgrp.dat` | Dados de **armaduras** | AparÃªncia de armaduras |
+| `etcitemgrp.dat` | Dados de **etc items** (materiais, scrolls) | Ãcone de itens diversos |
+| `npcname-e.dat` | **Nomes** de NPCs | Nome sobre a cabeÃ§a do NPC |
+| `npcgrp.dat` | **Modelo/aparÃªncia** de NPCs | Como o NPC parece |
+| `skillname-e.dat` | Nomes de skills | Nome das skills |
+| `skillgrp.dat` | Dados de skills (Ã­cone, nÃ­veis) | Ãcone/tooltip de skills |
+
+> O sufixo `-e` = versÃ£o em inglÃªs (English). Cada idioma tem seu arquivo de nomes.
+
+Estes `.dat` sÃ£o **binÃ¡rios criptografados** (nÃ£o abrem em editor de texto). VocÃª
+precisa de uma ferramenta para descriptografar â†’ editar (vira `.txt`) â†’ recriptografar.
+
+## Ferramentas
+
+| Ferramenta | Uso |
+|---|---|
+| **L2FileEdit** | Descriptografa/edita/recriptografa `.dat` (mais comum p/ Interlude) |
+| **L2 Client Dat Editor / DatEditor** | Editor visual dos `.dat` por versÃ£o de crÃ´nica |
+| **UnrealEd / L2Tool / UModel** | Abrir/editar `.utx` (texturas), `.ukx`/`.usx` (meshes) |
+
+> Ao usar qualquer ferramenta, **escolha a crÃ´nica/versÃ£o Interlude (protocol 746)**,
+> senÃ£o a estrutura dos `.dat` nÃ£o bate e corrompe o arquivo.
+
+### Fluxo genÃ©rico de ediÃ§Ã£o de um `.dat`
+
+1. **Backup** do `system/` (vocÃª jÃ¡ tem `system_backup_...`).
+2. Abra o `.dat` na ferramenta (modo Interlude).
+3. Descriptografe â†’ edite o registro do seu ID â†’ salve/recriptografe.
+4. Substitua o `.dat` em `system/`.
+5. Reabra o client.
+
+## Texturas e Ã­cones
+
+| Pasta | ConteÃºdo | Formato |
+|---|---|---|
+| `systextures/` | Ãcones (inclui `icon.*`) e UI | `.utx` (pacote de texturas) |
+| `textures/` | Texturas de mundo/itens | `.utx` |
+| `animations/` | AnimaÃ§Ãµes de personagens/mobs | `.ukx` |
+| `staticmeshes/` | Modelos estÃ¡ticos | `.usx` |
+
+O `icon="icon.weapon_long_sword_i00"` no XML do item aponta para uma textura dentro
+de um `.utx` de `systextures/`. Para um **Ã­cone novo**:
+1. Crie a imagem (geralmente 32Ã—32, formato compatÃ­vel DXT).
+2. Importe num pacote `.utx` (UnrealEd/L2Tool).
+3. Referencie no XML do item: `icon="icon.meu_icone_i00"`.
+
+> **Atalho:** para itens custom, **reuse Ã­cones existentes** (ex.:
+> `icon.weapon_long_sword_i00`). AÃ­ vocÃª nÃ£o mexe em textura nenhuma â€” sÃ³ precisa do
+> nome no `itemname-e.dat`.
+
+## Sincronizar IDs servidor â†” client (a regra de ouro do client)
+
+Para um item custom aparecer 100%:
+
+| Onde | O que colocar |
+|---|---|
+| Servidor `stats/items` | `<item id="30000" ...>` |
+| Client `itemname-e.dat` | registro do ID 30000 com nome/descriÃ§Ã£o |
+| Client `weapongrp`/`armorgrp`/`etcitemgrp` | registro do ID 30000 (mesh/Ã­cone) |
+
+Para um NPC custom:
+
+| Onde | O que colocar |
+|---|---|
+| Servidor `stats/npcs` | `<npc id="50000" ...>` |
+| Client `npcname-e.dat` | nome do ID 50000 |
+| Client `npcgrp.dat` | aparÃªncia do ID 50000 (pode reusar de outro NPC) |
+
+> **Distribuir para os jogadores:** qualquer `.dat`/textura que vocÃª mudar precisa
+> ir para o client de **cada jogador** (via patch/updater). Sem isso, eles veem
+> "sem nome/Ã­cone" ou crasham se referenciar um mesh inexistente.
+
+## NÃ­vel de risco por tipo de mudanÃ§a
+
+| MudanÃ§a | Dificuldade | Risco de crash no client |
+|---|---|---|
+| SÃ³ `itemname-e.dat` (nome) reusando Ã­cone/mesh existente | Baixa | Baixo |
+| Ãcone novo (`.utx`) | MÃ©dia | MÃ©dio |
+| Mesh/modelo 3D novo (`.ukx`/`.usx`) | Alta | Alto (client crasha se ID referencia mesh ausente) |
+
+> Regra prÃ¡tica: **reuse visual existente** sempre que possÃ­vel. SÃ³ parta para mesh
+> novo quando o visual for realmente essencial (ex.: Vesper "de verdade").
+
+## Caso Vesper no client (item que nÃ£o existe no Interlude)
+
+- **Rota simples:** stats no servidor + nome no `itemname-e.dat`, **reusando** o
+  visual de uma arma S existente (Draconic Bow, Forgotten Blade...). Sem crash,
+  sem mesh novo.
+- **Rota completa:** importar Ã­cone (`.utx`), mesh (`.ukx`/`.usx`) e textura da
+  Vesper de uma crÃ´nica posterior, registrar em `weapongrp.dat` e distribuir o patch.
+  Muito mais trabalho e propenso a crash se algo faltar.
+
+Passo a passo na receita 2 de [10_RECEITAS_PRATICAS.md](10_RECEITAS_PRATICAS.md).
+
+## Checklist de client
+
+- [ ] Backup do `system/` feito
+- [ ] Ferramenta na versÃ£o **Interlude (746)**
+- [ ] Mesmo **ID** no servidor e nos `.dat`
+- [ ] Ãcone/mesh: reusado (seguro) ou importado e testado
+- [ ] Patch distribuÃ­do aos jogadores (se aplicÃ¡vel)
+
+</script>
+<script type="text/markdown" id="doc-10">
+# 10 â€” Receitas PrÃ¡ticas (ponta a ponta)
+
+Quatro casos completos, do zero ao teste no jogo. Cada passo aponta para o doc
+detalhado. **Regra sempre vÃ¡lida:** edite em `source/.../dist/game/**` (nunca sÃ³ em
+`server/`), depois `ant`/copiar â†’ `//reload` ou reiniciar. Ver [01](01_ARQUITETURA.md).
+
+ConvenÃ§Ãµes de IDs usadas aqui (livres, altos, sem colisÃ£o retail):
+
+| Coisa | ID |
+|---|---|
+| NPC loja custom | `50000` |
+| Arma custom "Custom Blade" | `30000` |
+| Material custom "Fragmento Custom" | `30500` |
+| Buylist custom | `0050000` |
+| Multisell custom | `50001` |
+
+---
+
+## Receita 1 â€” NPC loja que vende itens (inclusive grade S e custom)
+
+**Objetivo:** um mercador que vende scrolls S, itens retail e seu item custom.
+
+1. **Criar o NPC** â€” [04](04_NPCS_E_LOJAS.md#1-definiÃ§Ã£o-do-npc-datastatsnpcsxml).
+   Em `source/.../dist/game/data/stats/npcs/50000-50099-custom.xml`:
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../xsd/npcs.xsd">
+       <npc id="50000" level="70" type="Merchant" name="Custom Shop">
+           <race>HUMAN</race><sex>MALE</sex>
+           <stats str="40" int="21" dex="30" wit="20" con="43" men="10">
+               <vitals hp="3000" mp="1500" />
+               <attack physical="10" magical="10" attackSpeed="253" type="FIST" range="40" />
+               <defence physical="100" magical="100" />
+               <speed><walk ground="50" /><run ground="120" /></speed>
+           </stats>
+           <collision><radius normal="8" /><height normal="23" /></collision>
+       </npc>
+   </list>
+   ```
+2. **Criar a buylist** `data/buylists/0050000.xml` â€” [04](04_NPCS_E_LOJAS.md#4-loja-de-venda--buylist-databuylistsxml):
+   ```xml
+   <list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/buylist.xsd">
+       <npcs><npc>50000</npc></npcs>
+       <item id="959" price="500000" />    <!-- Enchant Weapon S -->
+       <item id="960" price="500000" />    <!-- Enchant Armor S -->
+       <item id="30000" price="10000000" /> <!-- Custom Blade -->
+   </list>
+   ```
+3. **Criar o HTML** `data/html/merchant/50000.htm`:
+   ```html
+   <html><body><center>Loja Custom</center><br>
+   <a action="bypass npc_%objectId%_Buy 50000">Comprar itens</a>
+   </body></html>
+   ```
+4. **Client:** adicione o ID 50000 em `npcname-e.dat`/`npcgrp.dat` (reuse aparÃªncia
+   de um mercador retail) â€” [09](09_CLIENT_SIDE.md).
+5. **Deploy:** `ant` (ou copiar os arquivos) â†’ reiniciar (ou `//reload npc` +
+   `//reload buylist` + `//reload htm`).
+6. **Testar:** `//spawn 50000`, clique no NPC, compre.
+
+---
+
+## Receita 2 â€” Arma custom estilo "Vesper" (grade S)
+
+**Objetivo:** arma custom forte, com visual reusado (rota segura sem mesh novo).
+Lembre: no Interlude o topo Ã© **grade S** â€” Vesper "de verdade" Ã© de outra crÃ´nica,
+entÃ£o fazemos uma arma S custom com o nome/stats de Vesper. Ver [03](03_ITENS.md#caso-vesper-item-que-nÃ£o-existe-no-interlude).
+
+1. **Criar o item** em `data/stats/items/30000-30099-custom.xml`
+   ([03](03_ITENS.md#criando-um-item-custom-passo-a-passo-lado-servidor)):
+   ```xml
+   <item id="30000" type="Weapon" name="Vesper Cutter">
+       <set name="icon" val="icon.weapon_forgotten_blade_i00" /> <!-- reusa visual S -->
+       <set name="default_action" val="EQUIP" />
+       <set name="weapon_type" val="SWORD" />
+       <set name="bodypart" val="rhand" />
+       <set name="damage_range" val="0;0;40;120" />
+       <set name="crystal_type" val="S" />
+       <set name="material" val="STEEL" />
+       <set name="weight" val="1600" />
+       <set name="price" val="50000000" />
+       <set name="enchant_enabled" val="true" />
+       <stats>
+           <stat type="pAtk">340</stat>
+           <stat type="critRate">12</stat>
+           <stat type="pAtkSpd">400</stat>
+           <stat type="pAtkRange">40</stat>
+       </stats>
+   </item>
+   ```
+2. **Client:** adicione o ID 30000 no `itemname-e.dat` (nome "Vesper Cutter" +
+   descriÃ§Ã£o) e no `weapongrp.dat` reusando o mesh/Ã­cone da Forgotten Blade â€”
+   [09](09_CLIENT_SIDE.md#caso-vesper-no-client-item-que-nÃ£o-existe-no-interlude).
+3. **Deploy:** `ant` â†’ reiniciar o Game Server.
+4. **Testar:** `//create_item 30000 1`, equipe, confira stats e visual.
+
+> Quer o **visual real** da Vesper? Importe Ã­cone/mesh/textura de uma crÃ´nica
+> posterior e registre no `weapongrp.dat` (rota completa, mais arriscada) â€” [09](09_CLIENT_SIDE.md).
+
+---
+
+## Receita 3 â€” Enchant atÃ© +25 com blessed que facilita
+
+**Objetivo:** subir o teto de enchant e ter um blessed scroll com chances generosas.
+Ver [05](05_ENCHANT.md).
+
+1. **Aumentar o teto** em `data/EnchantItemData.xml` â€” nos scrolls desejados,
+   `maxEnchant="25"`. Ex.:
+   ```xml
+   <enchant id="959" targetGrade="S" maxEnchant="25" />
+   <enchant id="6577" targetGrade="S" maxEnchant="25" scrollGroupId="1" /> <!-- blessed usa grupo facil -->
+   ```
+2. **Chances normais** em `data/EnchantItemGroups.xml` â€” estenda os ranges:
+   ```xml
+   <enchantRateGroup name="FIGHTER_WEAPON_GROUP">
+       <current enchant="0-4" chance="100" />
+       <current enchant="5-15" chance="66" />
+       <current enchant="16-20" chance="40" />
+       <current enchant="21-25" chance="20" />
+       <current enchant="26-65535" chance="0" />
+   </enchantRateGroup>
+   ```
+3. **Chances fÃ¡ceis do blessed** â€” crie um grupo novo e um `<enchantScrollGroup id="1">`
+   amarrando aos slots, com chances altas; aponte o scroll blessed a `scrollGroupId="1"`
+   (passo 1). Ver [05](05_ENCHANT.md#receita-b--blessed-scroll-custom-que-facilita-enchant).
+4. **Teto rÃ­gido** em `config/Player.ini`: `DisableOverEnchanting = True`.
+5. **Comportamento** (opcional, sÃ³ se quiser blessed que **nÃ£o reseta pra 0** ao
+   falhar): editar `network/clientpackets/RequestEnchantItem.java` e `ant` â€”
+   [08](08_CODIGO_FONTE.md#pacotes-de-rede-onde-as-aÃ§Ãµes-acontecem-de-verdade).
+6. **Deploy:** `//reload` (enchant) ou reiniciar. Teste com scrolls no jogo.
+
+---
+
+## Receita 4 â€” Mob dropa material â†’ craft de item custom
+
+**Objetivo:** um mob larga "Fragmento Custom"; junte 10 e troque por "Custom Blade".
+Ver [06](06_DROPS_E_CRAFT.md).
+
+1. **Material custom** em `data/stats/items/30500-30599-custom.xml`
+   ([03](03_ITENS.md#exemplo-de-etcitem-material--o-que-vocÃª-vai-usar-para-custom)):
+   ```xml
+   <item id="30500" type="EtcItem" name="Fragmento Custom">
+       <set name="icon" val="icon.etc_adena_i00" /> <!-- reusa icone -->
+       <set name="weight" val="10" />
+       <set name="price" val="0" />
+       <set name="material" val="PAPER" />
+   </item>
+   ```
+2. **Item final** = "Custom Blade" (id 30000) da Receita 2 (ou outro).
+3. **Drop no mob** â€” no `<dropLists>` do mob escolhido (ex.: Gremlin em
+   `20000-20099.xml`) â€” [06](06_DROPS_E_CRAFT.md#adicionar-um-drop-a-um-mob):
+   ```xml
+   <group chance="20">
+       <item id="30500" min="1" max="2" chance="100" /> <!-- Fragmento Custom -->
+   </group>
+   ```
+4. **Craft via multisell** `data/multisell/50001.xml`
+   ([06](06_DROPS_E_CRAFT.md#opÃ§Ã£o-a--multisell-troca-instantÃ¢nea-sem-skill)):
+   ```xml
+   <list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/multisell.xsd">
+       <item>
+           <ingredient count="10" id="30500" />
+           <ingredient count="1000000" id="57" /> <!-- + adena -->
+           <production count="1" id="30000" />
+       </item>
+   </list>
+   ```
+5. **Ligar ao NPC** (o da Receita 1): adicione no HTML dele:
+   ```html
+   <a action="bypass -h npc_%objectId%_multisell 50001">Craftar Custom Blade</a>
+   ```
+6. **Client:** nome/Ã­cone do 30500 no `etcitemgrp.dat`/`itemname-e.dat` (ou reuse) â€”
+   [09](09_CLIENT_SIDE.md).
+7. **Deploy:** `ant`/copiar â†’ `//reload` (npc, multisell) ou reiniciar.
+8. **Testar:** mate o mob atÃ© juntar 10 fragmentos, fale com o NPC, craft.
+
+---
+
+## Checklist geral (vale para todas as receitas)
+
+- [ ] Editei em `source/.../dist/game/**` (nÃ£o sÃ³ em `server/`)
+- [ ] IDs livres e consistentes entre servidor e client
+- [ ] Fiz `ant` (se mexi em Java) ou copiei os XML/HTML
+- [ ] `//reload` (datapack) ou reiniciei (config/Java)
+- [ ] Client atualizado (nome/Ã­cone) se o item/NPC Ã© novo
+- [ ] Testei com comandos GM (`//spawn`, `//create_item`, `//reload`)
+- [ ] Commitei o `source/` no git para nÃ£o perder (ver `README.md`)
+
+## Comandos GM Ãºteis para testar
+
+```
+//spawn <npcId>          cria NPC
+//create_item <id> <qtd> gera item
+//loc                    coordenadas p/ spawn
+//reload                 painel de reload
+//enchant                testar enchant
+```
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+<script>
+  const DOCS = [
+    { id: "doc-00", title: "Inicio / Indice" },
+    { id: "doc-01", title: "Arquitetura" },
+    { id: "doc-02", title: "Estrutura de Pastas" },
+    { id: "doc-03", title: "Itens" },
+    { id: "doc-04", title: "NPCs e Lojas" },
+    { id: "doc-05", title: "Enchant" },
+    { id: "doc-06", title: "Drops e Craft" },
+    { id: "doc-07", title: "Configuracoes" },
+    { id: "doc-08", title: "Codigo-Fonte" },
+    { id: "doc-09", title: "Client-Side" },
+    { id: "doc-10", title: "Receitas Praticas" },
+  ];
+  const content = document.getElementById('content');
+  const crumb = document.getElementById('crumb');
+
+  function slug(s){
+    return s.toLowerCase().trim()
+      .replace(/[^\p{L}\p{N}\s-]/gu,'')
+      .replace(/\s+/g,'-');
+  }
+  function mermaidTheme(){
+    return document.documentElement.getAttribute('data-theme')==='dark' ? 'dark' : 'default';
+  }
+  if(window.mermaid){ mermaid.initialize({ startOnLoad:false, theme:mermaidTheme(), securityLevel:'loose' }); }
+  if(window.marked){ marked.setOptions({ gfm:true, breaks:false }); }
+
+  function parseHash(){
+    const h = decodeURIComponent(location.hash.slice(1));
+    if(!h) return { id:'doc-00' };
+    const p = h.split('::');
+    return { id:p[0], anchor:p[1] };
+  }
+
+  function render(docId, anchor){
+    const el = document.getElementById(docId);
+    if(!el){ render('doc-00'); return; }
+    content.innerHTML = window.marked ? marked.parse(el.textContent) : '<pre>'+el.textContent+'</pre>';
+
+    // ids nas headings (github-style)
+    const used = {};
+    content.querySelectorAll('h1,h2,h3,h4').forEach(h=>{
+      let id = slug(h.textContent);
+      if(used[id]!=null){ used[id]++; id = id + '-' + used[id]; } else { used[id]=0; }
+      h.id = id;
+    });
+
+    // mermaid
+    content.querySelectorAll('pre code.language-mermaid').forEach(c=>{
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = c.textContent;
+      c.closest('pre').replaceWith(div);
+    });
+    if(window.mermaid){
+      try{ mermaid.run({ nodes: content.querySelectorAll('.mermaid') }); }catch(e){}
+    }
+
+    // highlight
+    if(window.hljs){
+      content.querySelectorAll('pre code').forEach(c=>{ try{ hljs.highlightElement(c); }catch(e){} });
+    }
+
+    // nav ativa
+    document.querySelectorAll('.nav-link').forEach(a=>a.classList.toggle('active', a.dataset.doc===docId));
+    const meta = DOCS.find(d=>d.id===docId);
+    crumb.textContent = meta ? meta.title : 'Inicio';
+    document.title = (meta? meta.title+' - ' : '') + 'Guia L2J Mobius';
+
+    addPager(docId);
+
+    // scroll
+    if(anchor){
+      const t = document.getElementById(anchor);
+      if(t){ t.scrollIntoView(); return; }
+    }
+    window.scrollTo(0,0);
+    document.querySelector('.main').scrollTop = 0;
+  }
+
+  function addPager(docId){
+    const i = DOCS.findIndex(d=>d.id===docId);
+    if(i<0) return;
+    const prev = DOCS[i-1], next = DOCS[i+1];
+    const wrap = document.createElement('div'); wrap.className='pager';
+    if(prev){
+      const a=document.createElement('a'); a.href='#'+prev.id;
+      a.innerHTML='<span class="lbl">&#8592; Anterior</span><span class="ttl">'+prev.title+'</span>';
+      wrap.appendChild(a);
+    } else { wrap.appendChild(document.createElement('span')); }
+    if(next){
+      const a=document.createElement('a'); a.href='#'+next.id; a.className='next';
+      a.innerHTML='<span class="lbl">Proximo &#8594;</span><span class="ttl">'+next.title+'</span>';
+      wrap.appendChild(a);
+    }
+    content.appendChild(wrap);
+  }
+
+  function go(docId, anchor){
+    const h = anchor ? docId+'::'+anchor : docId;
+    if(location.hash.slice(1) === h){ const {id,a}=parseHash(); render(docId, anchor); }
+    else location.hash = h;
+    document.body.classList.remove('nav-open');
+  }
+
+  // Navegacao lateral
+  document.querySelectorAll('.nav-link').forEach(a=>{
+    a.addEventListener('click', e=>{ e.preventDefault(); go(a.dataset.doc); });
+  });
+
+  // Links internos entre docs e ancoras
+  content.addEventListener('click', e=>{
+    const a = e.target.closest('a'); if(!a) return;
+    const href = a.getAttribute('href'); if(!href) return;
+    let m = href.match(/^(\d{2})_[^#]*\.md(?:#(.*))?$/);
+    if(m){ e.preventDefault(); go('doc-'+m[1], m[2] ? decodeURIComponent(m[2]) : null); return; }
+    if(href.startsWith('#') && !href.startsWith('#doc-')){
+      e.preventDefault();
+      const t = document.getElementById(decodeURIComponent(href.slice(1)));
+      if(t) t.scrollIntoView();
+    }
+  });
+
+  // Busca / filtro
+  document.getElementById('search').addEventListener('input', e=>{
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('.nav-link').forEach(a=>{
+      a.style.display = a.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  // Tema
+  const themeBtn = document.getElementById('themeBtn');
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('l2docs-theme', t);
+    if(window.mermaid){ mermaid.initialize({ startOnLoad:false, theme:mermaidTheme(), securityLevel:'loose' }); }
+    const cur = parseHash(); render(cur.id, cur.anchor);
+  }
+  themeBtn.addEventListener('click', ()=>{
+    applyTheme(document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark');
+  });
+  const saved = localStorage.getItem('l2docs-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+
+  // Menu mobile
+  document.getElementById('menuBtn').addEventListener('click', ()=>document.body.classList.toggle('nav-open'));
+  document.getElementById('backdrop').addEventListener('click', ()=>document.body.classList.remove('nav-open'));
+
+  // Roteamento
+  window.addEventListener('hashchange', ()=>{ const {id,anchor}=parseHash(); render(id,anchor); });
+  const init = parseHash(); render(init.id, init.anchor);
+</script>
+</body>
+</html>

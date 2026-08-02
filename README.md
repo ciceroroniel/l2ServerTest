@@ -26,6 +26,7 @@ l2ServerTest/
 | 6 | [CLIENT.md](docs/CLIENT.md) |
 | — | [COMANDOS_BANCO.md](docs/COMANDOS_BANCO.md) — comandos SQL para GM, contas, itens |
 | — | [modding/00_INDICE.md](docs/modding/00_INDICE.md) — **guia de customização** (itens, NPCs, lojas, enchant, drops, código, client) |
+| — | [modding/index.html](docs/modding/index.html) — **versão navegável no navegador** (mesma doc, com busca e diagramas). Regenerar: `scripts/build-docs-html.ps1` |
 
 ### Configuração local (não versionada)
 
