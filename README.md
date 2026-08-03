@@ -31,6 +31,21 @@ l2ServerTest/
 | — | [modding/11_PIPELINE_EXEMPLOS.md](docs/modding/11_PIPELINE_EXEMPLOS.md) — **pipeline completo** (buffer, cap +HP/CP, tattoo cast speed) do zero ao teste |
 | — | [custom/](custom/README.md) — **customizações versionadas** (itens/npcs/skills custom + spawns). Deploy: `scripts/deploy-custom.ps1` |
 
+### QA / Matriz de testes
+
+| Doc | Conteúdo |
+|---|---|
+| [Matriz completa](docs/testes/matriz.md) | Fases 0–15 (backlog) |
+| [Ciclo 1](docs/testes/ciclo-1.md) | Checklist fundação |
+| [Gate Fase 2](docs/testes/gate-fase2.md) | Go/No-go |
+| [IDs de itens (GM)](docs/ITEMS.md) | create_item + itens no banco |
+| [Comandos GM / spawn / TP](docs/ADMIN.md) | teleport, spawn bosses, grandboss |
+| [Catálogo completo](docs/testes/items-catalog-full.md) | 9208 IDs do datapack |
+| [Catálogo bosses](docs/testes/bosses-catalog.md) | Raid + Grand Boss NPC IDs |
+| [Testes executados](docs/testes/testes-executados.md) | Log de resultados |
+| [Bugs conhecidos](docs/testes/bugs-conhecidos.md) | S0–S5 |
+| [Ambiente](docs/testes/ambiente.md) | Versões e commit Mobius |
+
 ### Configuração local (não versionada)
 
 ```powershell
@@ -52,5 +67,6 @@ copy config\accounts.local.env.example config\accounts.local.env
 - [x] Fase 3 — Source e build
 - [x] Fase 4 — Banco de dados
 - [x] Fase 5 — Configuração dos servidores
-- [x] Fase 6 — Client e primeiro login (contas prontas; client pendente)
-- [ ] Fase 7 — MVP funcional
+- [x] Fase 6 — Client limpo + contas
+- [~] Ciclo 1 QA — baseline + smoke OK; **NO-GO** Fase 2 (ver [gate-fase2.md](docs/testes/gate-fase2.md))
+- [ ] Fase 7 — MVP funcional / matriz Fases 2+

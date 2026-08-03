@@ -1,0 +1,80 @@
+2026.07.28 12:14:10,969	INFO	3	org.l2jmobius.gameserver.model.siege.Siege	Siege of Giran: Sun Aug 09 16:00:00 GMT-03:00 2026
+2026.07.28 12:14:10,970	INFO	3	org.l2jmobius.gameserver.model.siege.Siege	Siege of Oren: Sun Aug 09 20:00:00 GMT-03:00 2026
+2026.07.28 12:14:10,970	INFO	3	org.l2jmobius.gameserver.model.siege.Siege	Siege of Aden: Sun Aug 09 16:00:00 GMT-03:00 2026
+2026.07.28 12:14:10,970	INFO	3	org.l2jmobius.gameserver.model.siege.Siege	Siege of Innadril: Sun Aug 09 20:00:00 GMT-03:00 2026
+2026.07.28 12:14:10,971	INFO	3	org.l2jmobius.gameserver.model.siege.Siege	Siege of Goddard: Sun Aug 09 16:00:00 GMT-03:00 2026
+2026.07.28 12:14:10,971	INFO	3	org.l2jmobius.gameserver.model.siege.Siege	Siege of Rune: Sun Aug 09 20:00:00 GMT-03:00 2026
+2026.07.28 12:14:10,972	INFO	3	org.l2jmobius.gameserver.model.siege.Siege	Siege of Schuttgart: Sun Aug 09 16:00:00 GMT-03:00 2026
+2026.07.28 12:14:10,979	INFO	3	org.l2jmobius.gameserver.managers.CastleManorManager	CastleManorManager: Loaded 258 seeds.
+2026.07.28 12:14:10,985	INFO	3	org.l2jmobius.gameserver.managers.CastleManorManager	CastleManorManager: Manor data loaded.
+2026.07.28 12:14:10,989	INFO	3	org.l2jmobius.gameserver.managers.MercTicketManager	MercTicketManager: Loaded 0 Mercenary Tickets
+2026.07.28 12:14:10,989	INFO	3	org.l2jmobius.gameserver.managers.ScriptManager	ScriptManager: Loaded 342 quests.
+2026.07.28 12:14:10,990	INFO	3	org.l2jmobius.gameserver.managers.ScriptManager	ScriptManager: Loaded 125 scripts.
+2026.07.28 12:14:10,992	INFO	3	org.l2jmobius.gameserver.managers.games.MonsterRaceManager	MonsterRace: loaded 4 records, currently on race #5
+2026.07.28 12:14:11,035	INFO	3	org.l2jmobius.gameserver.model.sevensigns.SevenSignsFestival	SevenSignsFestival: The first Festival of Darkness cycle begins in 2 minute(s).
+2026.07.28 12:14:11,035	INFO	3	org.l2jmobius.gameserver.GameServer	AutoSpawnHandler: Loaded 124 handlers in total.
+2026.07.28 12:14:11,038	INFO	3	org.l2jmobius.gameserver.managers.DailyResetManager	DailyResetManager: Daily task will run now.
+2026.07.28 12:14:11,038	INFO	3	org.l2jmobius.gameserver.managers.DailyResetManager	Starting reset of daily tasks...
+2026.07.28 12:14:11,038	INFO	3	org.l2jmobius.gameserver.managers.DailyResetManager	Daily tasks reset completed.
+2026.07.28 12:14:11,041	INFO	3	org.l2jmobius.gameserver.managers.PunishmentManager	PunishmentManager: Loaded 0 active and 0 expired punishments.
+2026.07.28 12:14:11,043	INFO	3	org.l2jmobius.gameserver.GameServer	IdManager: Free ObjectID's remaining: 1879008660
+2026.07.28 12:14:11,044	INFO	3	org.l2jmobius.gameserver.data.sql.OfflineTraderTable	OfflineTraderTable: Loading offline traders...
+2026.07.28 12:14:11,045	INFO	3	org.l2jmobius.gameserver.data.sql.OfflineTraderTable	OfflineTraderTable: Loaded 0 offline traders.
+2026.07.28 12:14:11,046	INFO	195	org.l2jmobius.commons.util.DeadlockWatcher	DeadlockWatcher: Thread started.
+2026.07.28 12:14:12,353	INFO	3	org.l2jmobius.gameserver.GameServer	GameServer: Started, using 1042 of 2048 MB total memory.
+2026.07.28 12:14:12,353	INFO	3	org.l2jmobius.gameserver.GameServer	GameServer: Maximum number of connected players is 2000.
+2026.07.28 12:14:12,354	INFO	3	org.l2jmobius.gameserver.GameServer	GameServer: Server loaded in 22 seconds.
+2026.07.28 12:14:12,367	INFO	202	org.l2jmobius.gameserver.LoginServerThread	LoginServerThread: Connecting to login on 127.0.0.1:9014
+2026.07.28 12:14:12,408	INFO	202	org.l2jmobius.gameserver.LoginServerThread	LoginServerThread: Registered on login as Server 1: Bartz
+2026.07.28 12:28:51,888	WARNING	359	org.l2jmobius.gameserver.model.actor.Creature	Master access level set for character SaninhaGM! Just a warning to be careful ;)
+2026.07.28 12:35:47,865	WARNING	168	handlers.chat.commands.admin.AdminShop	no buylist with id:10007
+2026.07.28 12:37:40,056	INFO	168	org.l2jmobius.gameserver.model.siege.Siege	Siege of Aden: Sun Aug 09 16:00:00 GMT-03:00 2026
+2026.07.28 12:44:11,047	INFO	106	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 12:44:11,050	INFO	106	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 13:00:00,116	INFO	153	org.l2jmobius.gameserver.managers.DayNightSpawnManager	DayNightSpawnManager: Removed 684 night creatures
+2026.07.28 13:00:00,181	INFO	153	org.l2jmobius.gameserver.managers.DayNightSpawnManager	DayNightSpawnManager: Spawned 232 day creatures
+2026.07.28 13:14:11,057	INFO	82	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 13:14:11,063	INFO	82	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 13:44:11,060	INFO	120	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 13:44:11,075	INFO	120	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 14:14:11,045	INFO	132	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 14:14:11,048	INFO	132	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 14:41:37,755	WARNING	332	org.l2jmobius.gameserver.handler.AdminCommandHandler	No handler registered for admin command 'admin_mobmenu'
+2026.07.28 14:44:11,058	INFO	134	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 14:44:11,068	INFO	134	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 14:45:22,024	WARNING	340	org.l2jmobius.gameserver.handler.AdminCommandHandler	No handler registered for admin command 'admin_exceptions'
+2026.07.28 15:02:02,301	WARNING	333	org.l2jmobius.gameserver.model.actor.Creature	Master access level set for character SaninhaGM! Just a warning to be careful ;)
+2026.07.28 15:02:27,344	WARNING	340	org.l2jmobius.gameserver.model.actor.Creature	Master access level set for character SaninhaGM! Just a warning to be careful ;)
+2026.07.28 15:02:57,077	WARNING	363	org.l2jmobius.gameserver.model.actor.Creature	Master access level set for character SaninhaGM! Just a warning to be careful ;)
+2026.07.28 15:14:11,060	INFO	65	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 15:14:11,063	INFO	65	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 15:36:40,214	INFO	149	org.l2jmobius.gameserver.managers.RaidBossSpawnManager	RaidBossSpawnManager: Updated Cherub Galaxia respawn time to Wed Jul 29 15:27:00 GMT-03:00 2026
+2026.07.28 15:44:11,051	INFO	113	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 15:44:11,054	INFO	113	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 16:00:00,063	INFO	157	ai.bosses.Zaken.ZakenDoor	Zaken door ID: 21240006 opened, game time 00:00.
+2026.07.28 16:00:00,096	INFO	151	org.l2jmobius.gameserver.managers.DayNightSpawnManager	DayNightSpawnManager: Removed 232 day creatures
+2026.07.28 16:00:00,269	INFO	151	org.l2jmobius.gameserver.managers.DayNightSpawnManager	DayNightSpawnManager: Spawned 684 night creatures
+2026.07.28 16:05:00,091	INFO	81	ai.bosses.Zaken.ZakenDoor	Zaken door ID: 21240006 closed, game time 00:30.
+2026.07.28 16:14:11,053	INFO	115	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 16:14:11,055	INFO	115	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 16:44:11,047	INFO	103	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 16:44:11,052	INFO	103	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 17:00:00,090	INFO	155	org.l2jmobius.gameserver.managers.DayNightSpawnManager	DayNightSpawnManager: Removed 684 night creatures
+2026.07.28 17:00:00,100	INFO	155	org.l2jmobius.gameserver.managers.DayNightSpawnManager	DayNightSpawnManager: Spawned 232 day creatures
+2026.07.28 17:14:11,045	INFO	61	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 17:14:11,047	INFO	61	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 17:44:11,051	INFO	90	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 17:44:11,054	INFO	90	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 18:00:01,547	INFO	133	org.l2jmobius.gameserver.model.olympiad.Olympiad	Olympiad System: Olympiad Game Started
+2026.07.28 18:14:11,045	INFO	137	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 18:14:11,047	INFO	137	org.l2jmobius.gameserver.managers.DailyResetManager	Olympiad System: Data updated.
+2026.07.28 18:14:11,049	INFO	137	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 18:35:22,260	INFO	138	org.l2jmobius.gameserver.managers.RaidBossSpawnManager	RaidBossSpawnManager: Updated Ember respawn time to Wed Jul 29 22:02:29 GMT-03:00 2026
+2026.07.28 18:44:11,057	INFO	83	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 18:44:11,058	INFO	83	org.l2jmobius.gameserver.managers.DailyResetManager	Olympiad System: Data updated.
+2026.07.28 18:44:11,063	INFO	83	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.
+2026.07.28 18:53:50,641	INFO	177	org.l2jmobius.gameserver.managers.DayNightSpawnManager	DayNightSpawnManager: Removed 232 day creatures
+2026.07.28 18:53:50,657	INFO	177	org.l2jmobius.gameserver.managers.DayNightSpawnManager	DayNightSpawnManager: Spawned 684 night creatures
+2026.07.28 19:14:12,964	INFO	135	org.l2jmobius.gameserver.managers.GlobalVariablesManager	GlobalVariablesManager: Stored 3 variables.
+2026.07.28 19:14:12,966	INFO	135	org.l2jmobius.gameserver.managers.DailyResetManager	Olympiad System: Data updated.
+2026.07.28 19:14:12,969	INFO	135	org.l2jmobius.gameserver.managers.DailyResetManager	SevenSigns: Data updated.

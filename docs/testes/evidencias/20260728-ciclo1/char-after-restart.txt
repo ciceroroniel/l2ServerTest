@@ -1,0 +1,15 @@
+*************************** 1. row ***************************
+      charId: 268475084
+   char_name: SaninhaGM
+account_name: admin
+       level: 80
+         exp: 4206072936
+          sp: 2673637
+       curHp: 4433
+       curMp: 1670
+       curCp: 31924
+           x: 82625
+           y: 148804
+           z: -3495
+       karma: 0
+      online: 0

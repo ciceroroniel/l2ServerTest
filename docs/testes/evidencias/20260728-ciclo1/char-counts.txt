@@ -1,0 +1,4 @@
+char_count
+0
+admin_chars
+1
